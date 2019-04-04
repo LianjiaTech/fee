@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "checkJs": false, // 检查数据类型
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["*"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+  ]
+}

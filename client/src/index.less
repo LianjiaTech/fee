@@ -1,0 +1,34 @@
+@import '~iview/src/styles/index.less';
+
+@menu-dark-title: #001529;
+@menu-dark-active-bg: #000c17;
+@layout-sider-background: #001529;
+//美化界面，表格左右两侧的边框线去掉=>有表格的页面
+.ivu-table-wrapper {
+  border: none;
+}
+.ivu-table:after {
+  width: 0;
+}
+
+//card标签去掉border，去掉圆角，去掉hover阴影
+.ivu-card-shadow {
+  box-shadow: none;
+}
+.ivu-card.ivu-card-shadow:hover {
+  box-shadow: none;
+}
+.ivu-card {
+  border-radius: 0;
+}
+
+//去掉图hover上去多余的点
+.g2-tooltip-list-item {
+  list-style: none;
+}
+
+//选择框close 按钮不居中=>对应错误看板页
+.ivu-select-large.ivu-select-multiple .ivu-tag i {
+  top: 0;
+}
+

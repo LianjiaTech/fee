@@ -1,0 +1,15 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets":  "> 0.25%, not dead"
+      }
+    ]
+  ],
+  "plugins": [
+    "@babel/plugin-syntax-dynamic-import",
+    // 支持在vue的render方法中嵌套jsx
+    "transform-vue-jsx"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "fee-task-manager",
+  "script": "./dist/fee.js",
+  "cwd": "./",
+  "args": ["Task:Manager"],
+  "watch": [
+    "dist"
+  ],
+  "ignore_watch": [
+    "node_modules",
+    "log"
+  ],
+  "watch_options": {
+    "followSymlinks": true
+  },
+  "error_file": "./log/pm2/command/task-manager-err.log",
+  "out_file": "./log/pm2/command/task-manager-out.log",
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "env_production": {
+    "NODE_ENV": "production"
+  },
+  "env_testing": {
+    "NODE_ENV": "testing"
+  }
+}
