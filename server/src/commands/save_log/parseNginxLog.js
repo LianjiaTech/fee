@@ -17,7 +17,7 @@ class NginxParseLog extends SaveLogBase {
   }
 
   static get description () {
-    return '每十分钟读取Nginx日志文件，并解析'
+    return '每一分钟读取Nginx日志文件，并解析'
   }
 
   async execute (args, options) {
