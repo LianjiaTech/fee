@@ -36,7 +36,7 @@ _.has = _lodashEs.has;
 _.clone = _lodashEs.clone;
 _.isFunction = _lodashEs.isFunction;
 _.merge = _lodashEs.merge;
-var feeTarget = 'https://xxx.com/dig'; // 打点服务器，或Nginx地址
+var feeTarget = 'https://test.com/dig'; // 打点服务器，或Nginx地址
 // pid string 工程id:platfe_saas
 // uuid string 用户信息
 // ucid string 用户信息
@@ -121,9 +121,9 @@ var DEFAULT_CONFIG = {
   // 可以不填, 默认为1.0.0
   version: '1.0.0',
   // 对于如同
-  // xxx.com/detail/1.html
-  // xxx.com/detail/2.html
-  // xxx.com/detail/3.html
+  // test.com/detail/1.html
+  // test.com/detail/2.html
+  // test.com/detail/3.html
   // ...
   // 这种页面来说, 虽然url不同, 但他们本质上是同一个页面
   // 因此需要业务方传入一个处理函数, 根据当前url解析出真实的页面类型(例如: 二手房列表/经纪人详情页), 以便灯塔系统对错误来源进行分类

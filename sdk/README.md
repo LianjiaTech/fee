@@ -45,9 +45,9 @@ dt.set({
   version: '1.0.0',
 
   // 对于如同
-  // xxx.com/detail/1.html
-  // xxx.com/detail/2.html
-  // xxx.com/detail/3.html
+  // test.com/detail/1.html
+  // test.com/detail/2.html
+  // test.com/detail/3.html
   // ...
   // 这种页面来说, 虽然url不同, 但他们本质上是同一个页面
   // 因此需要业务方传入一个处理函数, 根据当前url解析出真实的页面类型(例如: 二手房列表/经纪人详情页), 以便灯塔系统对错误来源进行分类
@@ -101,9 +101,9 @@ script标签引入 =>
     version: '1.0.0',
 
     // 对于如同
-    // xxx.com/detail/1.html
-    // xxx.com/detail/2.html
-    // xxx.com/detail/3.html
+    // test.com/detail/1.html
+    // test.com/detail/2.html
+    // test.com/detail/3.html
     // ...
     // 这种页面来说, 虽然url不同, 但他们本质上是同一个页面
     // 因此需要业务方传入一个处理函数, 根据当前url解析出真实的页面类型(例如: 二手房列表/经纪人详情页), 以便灯塔系统对错误来源进行分类
@@ -163,7 +163,7 @@ dt.notify(
   'a.b.com',               // url地址, 不能超过200个字符
   {
    // 下列字段填写后会被统一展示 
-   'trace_url':'trace.xxx.com/123456',
+   'trace_url':'trace.test.com/123456',
    'http_code':200,        
    'during_ms':10,         
    'request_size_b':1024,  
@@ -176,10 +176,10 @@ dt.notify(
 
 
 # 如何确认埋点成功？
-通过Chrome或Charles等工具拦截URL为`https://dig.xxxx.com/fee.gif`开头的网络请求,查看请求参数是否携带埋点信息
+通过Chrome或Charles等工具拦截URL为`https://dig.xtest.com/fee.gif`开头的网络请求,查看请求参数是否携带埋点信息
 
 例如这个URL:
-[点我](https://dig.xxxxx.com/fee.gif?d=%7B%22type%22%3A%22error%22%2C%22code%22%3A3%2C%22detail%22%3A%7B%22error_no%22%3A122%2C%22http_code%22%3A%22%22%2C%22during_ms%22%3A%22%22%2C%22url%22%3A%22a.b.c%22%2C%22request_size_b%22%3A%22%22%2C%22response_size_b%22%3A%22%22%2C%22reason%22%3A%22ERR_BLOCKED_BY_CLIENT%22%7D%2C%22extra%22%3A%7B%7D%2C%22common%22%3A%7B%22pid%22%3A%22platfe_saas%22%2C%22uuid%22%3A%22f770330d-b2c7-4bfa-94fb-b31338f65a85%22%2C%22ssid%22%3A%22df9c0245-005d-479c-81e0-7daa94c0681d%22%2C%22ucid%22%3A1000000023100106%2C%22timestamp%22%3A1537431733127%7D%2C%22msg%22%3A%22%22%7D)
+[点我](https://dig.xxtest.com/fee.gif?d=%7B%22type%22%3A%22error%22%2C%22code%22%3A3%2C%22detail%22%3A%7B%22error_no%22%3A122%2C%22http_code%22%3A%22%22%2C%22during_ms%22%3A%22%22%2C%22url%22%3A%22a.b.c%22%2C%22request_size_b%22%3A%22%22%2C%22response_size_b%22%3A%22%22%2C%22reason%22%3A%22ERR_BLOCKED_BY_CLIENT%22%7D%2C%22extra%22%3A%7B%7D%2C%22common%22%3A%7B%22pid%22%3A%22platfe_saas%22%2C%22uuid%22%3A%22f770330d-b2c7-4bfa-94fb-b31338f65a85%22%2C%22ssid%22%3A%22df9c0245-005d-479c-81e0-7daa94c0681d%22%2C%22ucid%22%3A1000000023100106%2C%22timestamp%22%3A1537431733127%7D%2C%22msg%22%3A%22%22%7D)
 
 对应打点信息为
 ```json
