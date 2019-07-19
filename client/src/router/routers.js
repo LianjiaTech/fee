@@ -1,5 +1,4 @@
 import Main from '@/view/main'
-import mobileView from 'src/view/mobile-view/index.vue'
 import Login from '@/view/login/login.vue'
 import ErrorDashboard from '@/view/error-dashboard/index.vue'
 import ErrorPage404 from '@/view/error-page/404.vue'
@@ -27,9 +26,9 @@ export default [
     name: 'login',
     meta: {
       title: 'Login - 登录',
-      hideInMenu: true
+      hideInMenu: true,
     },
-    component: Login
+    component: Login,
   },
   {
     path: '/',
@@ -37,8 +36,8 @@ export default [
     name: 'base',
     meta: {
       hideInMenu: true,
-      notCache: true
-    }
+      notCache: true,
+    },
   },
   {
     path: '/project/:id',
@@ -46,7 +45,7 @@ export default [
     name: 'home',
     meta: {
       hideInMenu: true,
-      notCache: true
+      notCache: true,
     },
     component: Main,
     children: [
@@ -56,11 +55,11 @@ export default [
         meta: {
           hideInMenu: true,
           title: '首页',
-          notCache: true
+          notCache: true,
         },
-        component: ErrorDashboard
-      }
-    ]
+        component: ErrorDashboard,
+      },
+    ],
   },
   {
     path: '/project/:id/behavior',
@@ -68,7 +67,7 @@ export default [
     component: Main,
     meta: {
       icon: 'md-hand',
-      title: '用户行为'
+      title: '用户行为',
       // access:["admin"]
     },
     children: [
@@ -77,37 +76,29 @@ export default [
         name: 'menu-count',
         meta: {
           icon: 'md-radio-button-on',
-          title: '菜单点击量'
+          title: '菜单点击量',
         },
-        component: MenuCount
+        component: MenuCount,
       },
       {
         path: 'online-time',
         name: 'online-time',
         meta: {
           icon: 'md-time',
-          title: '用户在线时长'
+          title: '用户在线时长',
         },
-        component: OnlineTime
+        component: OnlineTime,
       },
       {
         path: 'new-users',
         name: 'new-users',
         meta: {
           icon: 'md-person-add',
-          title: '新增用户数据'
+          title: '新增用户数据',
         },
-        component: NewUsers
-      }
-    ]
-  },
-  {
-    path: '/project/1/mobile',
-    name: 'mobileView',
-    component: mobileView,
-    meta: {
-      hideInMenu: true
-    }
+        component: NewUsers,
+      },
+    ],
   },
   {
     path: '/project/:id/monitor',
@@ -115,7 +106,7 @@ export default [
     component: Main,
     meta: {
       icon: 'md-warning',
-      title: '异常监控'
+      title: '异常监控',
       // access:["admin"]
     },
     children: [
@@ -124,27 +115,27 @@ export default [
         name: '页面性能',
         meta: {
           icon: 'md-speedometer',
-          title: '页面性能'
+          title: '页面性能',
         },
-        component: ViewPerformance
+        component: ViewPerformance,
       },
       {
         path: 'error-dashboard',
         name: 'error-dashboard',
         meta: {
           icon: 'md-help-buoy',
-          title: '错误看板'
+          title: '错误看板',
         },
-        component: ErrorDashboard
-      }
-    ]
+        component: ErrorDashboard,
+      },
+    ],
   },
   {
     path: '/project/:id/alarm',
     name: '报警',
     component: Main,
     meta: {
-      icon: 'md-alert'
+      icon: 'md-alert',
     },
     children: [
       {
@@ -152,61 +143,62 @@ export default [
         name: 'Alarm',
         meta: {
           icon: 'ios-settings',
-          title: '配置'
+          title: '配置',
         },
-        component: AlarmConfig
+        component: AlarmConfig,
       },
       {
         path: 'alarm-log',
         name: 'alarm_log',
         meta: {
           icon: 'md-clock',
-          title: '日志'
+          title: '日志',
         },
-        component: AlarmLog
-      }
-    ]
+        component: AlarmLog,
+      },
+    ],
   },
   {
     path: '/project/:id/userManage',
     name: '用户',
     component: Main,
     meta: {
-      access: ['owner']
+      access: ['owner'],
     },
-    children: [{
-      path: 'management',
-      name: 'Management',
-      meta: {
-        icon: 'md-people',
-        title: '成员管理'
+    children: [
+      {
+        path: 'management',
+        name: 'Management',
+        meta: {
+          icon: 'md-people',
+          title: '成员管理',
+        },
+        component: Management,
       },
-      component: Management
-    }
-    ]
+    ],
   },
   {
     path: '/401',
     name: 'error_401',
     meta: {
-      hideInMenu: true
+      hideInMenu: true,
     },
-    component: ErrorPage401
+    component: ErrorPage401,
   },
   {
     path: '/500',
     name: 'error_500',
     meta: {
-      hideInMenu: true
+      hideInMenu: true,
     },
-    component: ErrorPage500
+    component: ErrorPage500,
   },
   {
     path: '*',
     name: 'error_404',
     meta: {
-      hideInMenu: true
+      hideInMenu: true,
     },
-    component: ErrorPage404
-  }
+    component: ErrorPage404,
+  },
 ]
