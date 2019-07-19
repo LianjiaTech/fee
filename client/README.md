@@ -188,33 +188,8 @@ Vue.js的集中状态管理
     -   可以设定错误触发阈值, 错误数超出阈值后即会在企业微信中发送报警消息
  
  #  VSCode前端格式化推荐配置
- ##安装eslint,vetur插件
- ##点击设置->搜索settings.json，将如下配置填入进去
- ```json
-
-    "files.associations": {
-        "*.vue": "vue"
-    },
-    "javascript.format.insertSpaceBeforeFunctionParenthesis": true, //让函数(名)和后面的括号之间加个空格
-    // 保存自动化
-    "editor.formatOnSave": true,
-    // 保存时自动fix
-    "eslint.autoFixOnSave": true,
-    // 添加 vue 支持
-    "eslint.validate": [
-        "javascript",
-        "javascriptreact",
-        {
-            "language": "vue",
-            "autoFix": true
-        }
-    ],
-    // 使用插件格式化 html
-    "vetur.format.defaultFormatter.html": "js-beautify-html",
-    // 屏蔽vetur的js格式化
-    "vetur.format.defaultFormatter.js": "none",
-    "powermode.enabled": true
- ```
+ 安装[Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode), over
+ 
 
  #debug开关
  ```
