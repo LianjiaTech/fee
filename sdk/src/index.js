@@ -1,15 +1,32 @@
+/** @format */
+
 import sdkConf from '../config'
 import jstracker from './js-tracker'
 import promiseTracker from './promise'
 import timeonpageTracker from './timeonpage'
 import performanceTracker from './performance'
-import { detailAdapter, getDeviceId, customerErrorCheck, validLog, clog, isDom, noop, _ } from './utils'
-import { DEFAULT_CONFIG, TEST_FLAG, TARGET, JS_TRACKER_ERROR_CONSTANT_MAP, JS_TRACKER_ERROR_DISPLAY_MAP } from './constant'
+import {
+  detailAdapter,
+  getDeviceId,
+  customerErrorCheck,
+  validLog,
+  clog,
+  isDom,
+  noop,
+  _
+} from './utils'
+import {
+  DEFAULT_CONFIG,
+  TEST_FLAG,
+  TARGET,
+  JS_TRACKER_ERROR_CONSTANT_MAP,
+  JS_TRACKER_ERROR_DISPLAY_MAP
+} from './constant'
 
 let commonConfig = Object.assign({}, DEFAULT_CONFIG)
 
 class Base {
-  constructor () {
+  constructor() {
     // 是否为测试模式
     this.isTest = true
     // 是否为覆盖模式
@@ -24,7 +41,7 @@ class Base {
     this.config = Object.create(null)
   }
   // 组织config
-  computeConfig (config = {}) {
+  computeConfig(config = {}) {
     let _conf = this.isOverwrite ? { ...config } : _.merge(commonConfig, config)
     // 检测配置项
     let uuid = _.get(_conf, ['uuid'], '')
@@ -38,22 +55,36 @@ class Base {
       this.debugLogger('警告: 未设置ucid(用户唯一标识), 无法统计新增用户数')
     }
 
-    let checkErrorNeedReportFunc = _.get(_conf, ['record', 'js_error_report_config', 'checkErrorNeedReport'])
+    let checkErrorNeedReportFunc = _.get(_conf, [
+      'record',
+      'js_error_report_config',
+      'checkErrorNeedReport'
+    ])
     if (_.isFunction(checkErrorNeedReportFunc) === false) {
       // 如果新配置key中取不到回调函数不对, 则尝试一下旧配置
-      checkErrorNeedReportFunc = _.get(_conf, ['record', 'js_error_report_config', 'checkErrorNeedReport'])
+      checkErrorNeedReportFunc = _.get(_conf, [
+        'record',
+        'js_error_report_config',
+        'checkErrorNeedReport'
+      ])
     }
     //  还不对就没办法了
     if (_.isFunction(checkErrorNeedReportFunc) === false) {
-      this.debugLogger('警告: config.record.js_error_report_config.checkErrorNeedReport 不是可执行函数, 将导致错误打点数据异常')
+      this.debugLogger(
+        '警告: config.record.js_error_report_config.checkErrorNeedReport 不是可执行函数, 将导致错误打点数据异常'
+      )
     }
 
     const getPageTypeFunc = _.get(_conf, ['getPageType'])
     if (_.isFunction(getPageTypeFunc) === false) {
-      this.debugLogger('警告: config.getPageType 不是可执行函数, 将导致打点数据异常!')
+      this.debugLogger(
+        '警告: config.getPageType 不是可执行函数, 将导致打点数据异常!'
+      )
     }
     window.__dt_conf = _conf
-    const isTest = _.get(_conf, ['is_test'], _.get(DEFAULT_CONFIG, ['is_test'])) || _.get(_conf, ['test'], false) // 兼容旧配置项
+    const isTest =
+      _.get(_conf, ['is_test'], _.get(DEFAULT_CONFIG, ['is_test'])) ||
+      _.get(_conf, ['test'], false) // 兼容旧配置项
     if (isTest) {
       _conf.test = TEST_FLAG
       this.debugLogger('配置更新完毕')
@@ -65,26 +96,44 @@ class Base {
   }
 
   // 各种监控初始化
-  init (config = DEFAULT_CONFIG, isOverwrite = false) {
+  init(config = DEFAULT_CONFIG, isOverwrite = false) {
     // 是否为覆盖模式
     this.isOverwrite = isOverwrite
     this.config = commonConfig = this.computeConfig(config)
     this.isTest = !!_.get(commonConfig, 'test', false)
     // 检查是否监控性能指标
-    this.needRecordPerformance = _.get(commonConfig, ['record', 'performance'], _.get(DEFAULT_CONFIG, ['record', 'performance'])) || _.get(commonConfig, ['performance'], false) // 兼容旧配置项
+    this.needRecordPerformance =
+      _.get(
+        commonConfig,
+        ['record', 'performance'],
+        _.get(DEFAULT_CONFIG, ['record', 'performance'])
+      ) || _.get(commonConfig, ['performance'], false) // 兼容旧配置项
     // 检查是否监控JS错误
-    this.needRecordJsError = _.get(commonConfig, ['record', 'js_error'], _.get(DEFAULT_CONFIG, ['record', 'js_error'])) || _.get(commonConfig, ['jserror'], false)
+    this.needRecordJsError =
+      _.get(
+        commonConfig,
+        ['record', 'js_error'],
+        _.get(DEFAULT_CONFIG, ['record', 'js_error'])
+      ) || _.get(commonConfig, ['jserror'], false)
     // 检查是否监控用户在线时长
-    this.needRecordTimeOnPage = _.get(commonConfig, ['record', 'time_on_page'], _.get(DEFAULT_CONFIG, ['record', 'time_on_page'])) || _.get(commonConfig, ['online'], false)
+    this.needRecordTimeOnPage =
+      _.get(
+        commonConfig,
+        ['record', 'time_on_page'],
+        _.get(DEFAULT_CONFIG, ['record', 'time_on_page'])
+      ) || _.get(commonConfig, ['online'], false)
 
     const me = this
 
     // js错误统计
     jstracker.init({
       concat: false,
-      report: function (errorLogList = []) {
+      report: function(errorLogList = []) {
         if (me.needRecordJsError === false) {
-          me.debugLogger(`config.record.js_error为false, 跳过页面报错打点, 页面报错内容为 =>`, errorLogList)
+          me.debugLogger(
+            `config.record.js_error为false, 跳过页面报错打点, 页面报错内容为 =>`,
+            errorLogList
+          )
           return
         }
         for (let errorLog of errorLogList) {
@@ -92,18 +141,37 @@ class Base {
 
           // 检测该errorType是否需要记录
           let strErrorType = _.get(JS_TRACKER_ERROR_CONSTANT_MAP, type, '')
-          let isErrorTypeNeedRecord = _.get(commonConfig, ['record', 'js_error_report_config', strErrorType], _.get(DEFAULT_CONFIG, ['record', 'js_error_report_config', strErrorType]))
+          let isErrorTypeNeedRecord = _.get(
+            commonConfig,
+            ['record', 'js_error_report_config', strErrorType],
+            _.get(DEFAULT_CONFIG, [
+              'record',
+              'js_error_report_config',
+              strErrorType
+            ])
+          )
           if (isErrorTypeNeedRecord === false) {
             // 主动配置了忽略该错误, 自动返回
-            me.debugLogger(`config.record.js_error_report_config.${strErrorType}值为false, 跳过类别为${strErrorType}的页面报错打点, 错误信息=>`, errorLog)
+            me.debugLogger(
+              `config.record.js_error_report_config.${strErrorType}值为false, 跳过类别为${strErrorType}的页面报错打点, 错误信息=>`,
+              errorLog
+            )
             continue
           }
-          const isNeedReport = customerErrorCheck(commonConfig, desc, stack, me.debugLogger.bind(me))
+          const isNeedReport = customerErrorCheck(
+            commonConfig,
+            desc,
+            stack,
+            me.debugLogger.bind(me)
+          )
           if (!!isNeedReport === false) {
-            me.debugLogger(`config.record.js_error_report_config.checkErrorNeedReport返回值为false, 跳过此类错误, 页面报错信息为=>`, {
-              desc,
-              stack
-            })
+            me.debugLogger(
+              `config.record.js_error_report_config.checkErrorNeedReport返回值为false, 跳过此类错误, 页面报错信息为=>`,
+              {
+                desc,
+                stack
+              }
+            )
             continue
           }
           let errorName = '页面报错_' + JS_TRACKER_ERROR_DISPLAY_MAP[type]
@@ -115,13 +183,18 @@ class Base {
             stack
           })
 
-          me.log('error', 7, {
-            error_no: errorName,
-            url: location.href
-          }, {
-            desc,
-            stack
-          })
+          me.log(
+            'error',
+            7,
+            {
+              error_no: errorName,
+              url: location.href
+            },
+            {
+              desc,
+              stack
+            }
+          )
         }
       }
     })
@@ -133,28 +206,38 @@ class Base {
     timeonpageTracker.init.bind(me)(me.product)
   }
 
-  send (info = {}) {
+  send(info = {}) {
     let location = window.location
     let pageType = location.href
-    let getPageTypeFunc = _.get(commonConfig, ['getPageType'], _.get(DEFAULT_CONFIG, ['getPageType']))
+    let getPageTypeFunc = _.get(
+      commonConfig,
+      ['getPageType'],
+      _.get(DEFAULT_CONFIG, ['getPageType'])
+    )
 
     try {
       pageType = '' + getPageTypeFunc(location)
     } catch (e) {
-      this.debugLogger(`config.getPageType执行时发生异常, 请注意, 错误信息=>`, { e, location })
+      this.debugLogger(`config.getPageType执行时发生异常, 请注意, 错误信息=>`, {
+        e,
+        location
+      })
       pageType = `${location.host}${location.pathname}`
     }
 
-    info = Object.assign({
-      type: '',
-      common: {
-        ...commonConfig,
-        timestamp: Date.now(),
-        runtime_version: commonConfig.version,
-        sdk_version: sdkConf.version,
-        page_type: pageType
-      }
-    }, info)
+    info = Object.assign(
+      {
+        type: '',
+        common: {
+          ...commonConfig,
+          timestamp: Date.now(),
+          runtime_version: commonConfig.version,
+          sdk_version: sdkConf.version,
+          page_type: pageType
+        }
+      },
+      info
+    )
 
     // 图片打点
     const img = new window.Image()
@@ -168,7 +251,7 @@ class Base {
    * @param {消费数据} detail
    * @param {展示数据} extra
    */
-  log (type = '', code, detail = {}, extra = {}) {
+  log(type = '', code, detail = {}, extra = {}) {
     const errorMsg = validLog(commonConfig, type, code, detail, extra)
 
     if (errorMsg) {
@@ -185,29 +268,29 @@ class Base {
     this.send(logInfo)
   }
 
-  error (code, detail, extra) {
+  error(code, detail, extra) {
     return this.log('error', code, detail, extra)
   }
 
-  product (code, detail, extra) {
+  product(code, detail, extra) {
     return this.log('product', code, detail, extra)
   }
 
-  info (code, detail, extra) {
+  info(code, detail, extra) {
     return this.log('info', code, detail, extra)
   }
 
-  debugLogger () {
+  debugLogger() {
     // 只有在测试时才打印log
     if (this.isTest) console.log(...arguments)
   }
 }
 
 class Logger extends Base {
-  constructor () {
+  constructor() {
     super()
   }
-  set (...args) {
+  set(...args) {
     super.init(...args)
   }
   /**
@@ -216,7 +299,7 @@ class Logger extends Base {
    * @param {String} name [必填]用户行为名称, 和code对应, 用于展示, 最多50字符
    * @param {String} url  [可选]用户点击页面url, 可以作为辅助信息, 最多200字符
    */
-  behavior (code = '', name = '', url = '') {
+  behavior(code = '', name = '', url = '') {
     this.debugLogger('发送用户点击行为埋点, 上报内容 => ', { code, name, url })
     this.product(10002, {
       code,
@@ -225,7 +308,7 @@ class Logger extends Base {
     })
   }
 
-  notify (errorName = '', url = '', extraInfo = {}) {
+  notify(errorName = '', url = '', extraInfo = {}) {
     // 规范请求参数
     let detail = {}
     let extra = {}
@@ -240,11 +323,17 @@ class Logger extends Base {
     // 最大不能超过200字
     if (detail['error_name'].length > 200) {
       detail['error_name'] = detail['error_name'].slice(0, 200)
-      this.debugLogger('error_name长度不能超过200字符, 自动截断. 截断后为=>', detail['error_name'])
+      this.debugLogger(
+        'error_name长度不能超过200字符, 自动截断. 截断后为=>',
+        detail['error_name']
+      )
     }
     if (detail['url'].length > 200) {
       detail['url'] = detail['url'].slice(0, 200)
-      this.debugLogger('url长度不能超过200字符, 自动截断. 截断后为=>', detail['error_name'])
+      this.debugLogger(
+        'url长度不能超过200字符, 自动截断. 截断后为=>',
+        detail['error_name']
+      )
     }
 
     for (let intKey of [
@@ -266,13 +355,13 @@ class Logger extends Base {
     // 将rawDetail中的其余key存到extra中
     for (let extraKey of Object.keys(extraInfo)) {
       let protectKeyMap = {
-        'error_no': true,
-        'error_name': true,
-        'url': true,
-        'http_code': true,
-        'during_ms': true,
-        'request_size_b': true,
-        'response_size_b': true
+        error_no: true,
+        error_name: true,
+        url: true,
+        http_code: true,
+        during_ms: true,
+        request_size_b: true,
+        response_size_b: true
       }
       if (protectKeyMap[extraKey] !== true) {
         extra[extraKey] = extraInfo[extraKey]
@@ -288,11 +377,18 @@ class Logger extends Base {
    * @param {String} name
    * @param {*} args
    */
-  logger (name = '', args = {}, extra = {}) {
-    if (!name) return this.debugLogger('警告: 未设置【name】(打点事件名)属性, 无法统计该打点数据！')
-    if (typeof name !== 'string') return this.debugLogger('【name属性】(打点事件名)仅支持字符串类型！')
+  logger(name = '', args = {}, extra = {}) {
+    if (!name)
+      return this.debugLogger(
+        '警告: 未设置【name】(打点事件名)属性, 无法统计该打点数据！'
+      )
+    if (typeof name !== 'string')
+      return this.debugLogger('【name属性】(打点事件名)仅支持字符串类型！')
 
-    this.debugLogger(`发送【event】类型埋点，事件名：【${name}】. 上报内容 => `, args)
+    this.debugLogger(
+      `发送【event】类型埋点，事件名：【${name}】. 上报内容 => `,
+      args
+    )
     this.send({
       type: 'event',
       name,
@@ -312,7 +408,12 @@ class Logger extends Base {
    *
    * @returns {Instance of MutationObserver} 返回MutationObserver的实例，业务可根据需要调用disconnect方法来关闭监测
    */
-  detect (target = document.documentElement, notify = {}, config = {}, cb = noop) {
+  detect(
+    target = document.documentElement,
+    notify = {},
+    config = {},
+    cb = noop
+  ) {
     if (_.isFunction(config)) {
       cb = config
       config = {}
@@ -349,15 +450,17 @@ class Logger extends Base {
       clog(`attributes childList characterData配置不合法, 跳过白屏检测`)
       return
     }
-    let MutationObserver = window.MutationObserver || window.WebKitMutationObserver
-    if (!MutationObserver) return clog('您的浏览器不支持 MutationObserver API, 跳过白屏检测')
+    let MutationObserver =
+      window.MutationObserver || window.WebKitMutationObserver
+    if (!MutationObserver)
+      return clog('您的浏览器不支持 MutationObserver API, 跳过白屏检测')
     // 超过设置的超时时间后，执行该逻辑，上报白屏错误
     let timer = setTimeout(() => {
       this.notify(errorName, url, extraInfo)
       _.isFunction(cb) && cb(mo)
     }, timeout)
     let mo = void 0
-    let callback = (records) => {
+    let callback = records => {
       clearTimeout(timer)
       _.isFunction(cb) && cb(mo, records)
     }

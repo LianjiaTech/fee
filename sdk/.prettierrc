@@ -1,12 +1,11 @@
 {
-  "trailingComma": "none",
-  "tabWidth": 2,
+  "printWidth": 80,
   "semi": false,
   "singleQuote": true,
-  "jsxBracketSameLine": true,
-  "arrowParens": "always",
-  "vueIndentScriptAndStyle": true,
-  "insertPragma": true,
-  "printWidth": 100,
-  "proseWrap": "never"
+  "trailingComma": "none",
+  "bracketSpacing": true,
+  "jsxBracketSameLine": false,
+  "arrowParens": "avoid",
+  "requirePragma": false,
+  "proseWrap": "preserve"
 }
