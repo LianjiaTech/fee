@@ -1,8 +1,11 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
+var _Object$defineProperty = require("@babel/runtime-corejs2/core-js/object/define-property");
+
+_Object$defineProperty(exports, "__esModule", {
   value: true
 });
+
 exports.default = void 0;
 // df detail field
 // ef extra field
@@ -56,22 +59,22 @@ CODE_DETAIL_RULE[8] = {
     'request_size_b': 'request_size_b',
     // post参数体积, 单位b
     'response_size_b': 'response_size_b' // 响应值体积, 单位b
-    //选填字段
 
-  } // CODE_DETAIL_RULE[10001] = {
-  //   df: ['duration_ms',],
-  //   ef: [],
-  //   dft: {
-  //   },
-  // }
-  // CODE_DETAIL_RULE[10002] = {
-  //   df: ['code','url'],
-  //   ef: ['name'],
-  //   dft: {
-  //     'code': 'error_no',
-  //   },
-  // }
+  } //选填字段
 
-};
+}; // CODE_DETAIL_RULE[10001] = {
+//   df: ['duration_ms',],
+//   ef: [],
+//   dft: {
+//   },
+// }
+// CODE_DETAIL_RULE[10002] = {
+//   df: ['code','url'],
+//   ef: ['name'],
+//   dft: {
+//     'code': 'error_no',
+//   },
+// }
+
 var _default = CODE_DETAIL_RULE;
 exports.default = _default;

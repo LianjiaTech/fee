@@ -3,6 +3,7 @@ import {
   debounce,
   merge
 } from './util'
+import { isObject } from '../utils'
 
 var monitor = {}
 monitor.tryJS = tryJS
@@ -64,7 +65,6 @@ function __init () {
 
   //   handleError(formatRuntimerError.apply(null, arguments))
   // }
-
   // 监听资源加载错误(JavaScript Scource failed to load)
   window.addEventListener('error', function (event) {
     // 过滤 target 为 window 的异常，避免与上面的 onerror 重复
@@ -74,29 +74,25 @@ function __init () {
     } else {
       // onerror会被覆盖, 因此转为使用Listener进行监控
       let { message, filename, lineno, colno, error } = event
-      handleError(formatRuntimerError(message, filename, lineno, colno, error))
+      const formatedError = formatRuntimerError(message, filename, lineno, colno, error)
+      handleError(formatedError)
     }
-  }, true)
-
-  //监听开发中浏览器中捕获到未处理的Promise错误
-  window.addEventListener('unhandledrejection', function (event) {
-    console.log('Unhandled Rejection at:', event.promise, 'reason:', event.reason);
-    handleError(event)
   }, true)
 
   // 针对 vue 报错重写 console.error
   // TODO
   console.error = (function (origin) {
-    return function (info) {
+    const logErr = origin.error
+    return function (info, ...args) {
+      info = isObject(info) ? JSON.stringify(info, Object.getOwnPropertyNames(info)) : info
       var errorLog = {
         type: ERROR_CONSOLE,
         desc: info
       }
-
+      logErr.call(origin, info, ...args)
       handleError(errorLog)
-      origin.call(console, info)
     }
-  })(console.error)
+  })(console)
 }
 
 // 处理 try..catch 错误

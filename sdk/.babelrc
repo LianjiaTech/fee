@@ -3,9 +3,14 @@
     [
       "@babel/preset-env",
       {
+        "useBuiltIns": "usage",
         "targets": "> 0.25%, not dead"
       }
     ]
   ],
-  "plugins": []
+  "plugins": [
+    ["@babel/plugin-transform-runtime", {
+      "corejs": 2 // 参考官方文档
+    }]
+  ]
 }

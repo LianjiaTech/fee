@@ -27,7 +27,7 @@ let webpackConfig = {
     ]
   },
   output: {
-    path: path.resolve(`./dist/js/${config.version}/[hash:7]`),
+    path: path.resolve(`./dist/js/${config.version}`),
     filename: '[name].js', // 让生成的js按文件名分开，方便查找
     chunkFilename: path.join('.', 'dist', 'js', '[id].[hash:7].js'),
     publicPath: '/'
@@ -43,7 +43,7 @@ let webpackConfig = {
   ]
 }
 
-if (config.build.bundleAnalyzerReport) {
+if (process.env.Webpack_Analyze_Report) {
   const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
   webpackConfig.plugins.push(new BundleAnalyzerPlugin())
 }

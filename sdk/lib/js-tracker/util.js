@@ -1,12 +1,19 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
+var _Object$defineProperty = require("@babel/runtime-corejs2/core-js/object/define-property");
+
+_Object$defineProperty(exports, "__esModule", {
   value: true
 });
+
 exports.debounce = debounce;
 exports.merge = merge;
 exports.isFunction = isFunction;
 exports.arrayFrom = arrayFrom;
+
+require("core-js/modules/es6.regexp.to-string");
+
+require("core-js/modules/es6.object.to-string");
 
 /**
  * debounce

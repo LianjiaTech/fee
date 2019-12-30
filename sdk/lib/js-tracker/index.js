@@ -1,15 +1,26 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
+var _interopRequireWildcard = require("@babel/runtime-corejs2/helpers/interopRequireWildcard");
+
+var _interopRequireDefault = require("@babel/runtime-corejs2/helpers/interopRequireDefault");
+
+var _Object$defineProperty = require("@babel/runtime-corejs2/core-js/object/define-property");
+
+_Object$defineProperty(exports, "__esModule", {
   value: true
 });
+
 exports.default = void 0;
+
+var _getOwnPropertyNames = _interopRequireDefault(require("@babel/runtime-corejs2/core-js/object/get-own-property-names"));
+
+var _stringify = _interopRequireDefault(require("@babel/runtime-corejs2/core-js/json/stringify"));
 
 var _try = _interopRequireWildcard(require("./try"));
 
 var _util = require("./util");
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+var _utils = require("../utils");
 
 var monitor = {};
 monitor.tryJS = _try.default;
@@ -37,9 +48,9 @@ var config = {
   maxError: 16,
   // 异常报错数量限制
   sampling: 1 // 采样率
-  // 定义的错误类型码
 
-};
+}; // 定义的错误类型码
+
 var ERROR_RUNTIME = 1;
 var ERROR_SCRIPT = 2;
 var ERROR_STYLE = 3;
@@ -86,26 +97,29 @@ function __init() {
           lineno = event.lineno,
           colno = event.colno,
           error = event.error;
-      handleError(formatRuntimerError(message, filename, lineno, colno, error));
+      var formatedError = formatRuntimerError(message, filename, lineno, colno, error);
+      handleError(formatedError);
     }
-  }, true); //监听开发中浏览器中捕获到未处理的Promise错误
-
-  window.addEventListener('unhandledrejection', function (event) {
-    console.log('Unhandled Rejection at:', event.promise, 'reason:', event.reason);
-    handleError(event);
   }, true); // 针对 vue 报错重写 console.error
   // TODO
 
   console.error = function (origin) {
+    var logErr = origin.error;
     return function (info) {
+      info = (0, _utils.isObject)(info) ? (0, _stringify.default)(info, (0, _getOwnPropertyNames.default)(info)) : info;
       var errorLog = {
         type: ERROR_CONSOLE,
         desc: info
       };
+
+      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
+      }
+
+      logErr.call.apply(logErr, [origin, info].concat(args));
       handleError(errorLog);
-      origin.call(console, info);
     };
-  }(console.error);
+  }(console);
 } // 处理 try..catch 错误
 
 
