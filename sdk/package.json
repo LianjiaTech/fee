@@ -7,7 +7,8 @@
     "build": "babel src -d lib/ --verbose --copy-files && node script/build.js",
     "analyze": "babel src -d lib/ --verbose --copy-files && cross-env Webpack_Analyze_Report=true node script/build.js",
     "prepublish": "npm run build",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "commit": "git-cz"
   },
   "lint-staged": {
     "src/**/*.js": [
@@ -15,6 +16,11 @@
       "prettier --write",
       "git add"
     ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   },
   "keywords": [],
   "author": "lianjia-fe",
@@ -33,7 +39,9 @@
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
     "chalk": "^2.4.1",
+    "commitizen": "^4.0.3",
     "cross-env": "^5.2.0",
+    "cz-conventional-changelog": "^3.0.2",
     "eslint": "^5.12.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-config-standard": "^12.0.0",
