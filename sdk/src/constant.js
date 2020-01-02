@@ -1,8 +1,8 @@
 /** @format */
 
-export const COOKIE_NAME_DIVICE_ID = 'crosSdkDT2019DeviceId';
+export const COOKIE_NAME_DIVICE_ID = 'crosSdkDT2019DeviceId'
 
-export const TARGET = 'https://test.com/dig'; // 打点服务器，或Nginx地址
+export const TARGET = 'https://test.com/dig' // 打点服务器，或Nginx地址
 
 // pid string 工程id:platfe_saas
 // uuid string 用户信息
@@ -11,12 +11,12 @@ export const TARGET = 'https://test.com/dig'; // 打点服务器，或Nginx地�
 // mac string mac地址
 
 // 测试标记符
-export const TEST_FLAG = 'b47ca710747e96f1c523ebab8022c19e9abaa56b';
+export const TEST_FLAG = 'b47ca710747e96f1c523ebab8022c19e9abaa56b'
 
-export const LOG_TYPE_ERROR = 'error'; // 错误日志
-export const LOG_TYPE_PRODUCT = 'product'; // 产品指标
-export const LOG_TYPE_INFO = 'info'; // 尚未使用
-export const LOG_TYPE_PERFORMANCE = 'perf'; // 性能指标
+export const LOG_TYPE_ERROR = 'error' // 错误日志
+export const LOG_TYPE_PRODUCT = 'product' // 产品指标
+export const LOG_TYPE_INFO = 'info' // 尚未使用
+export const LOG_TYPE_PERFORMANCE = 'perf' // 性能指标
 
 // 定义JS_TRACKER错误类型码
 export const JS_TRACKER_ERROR_CONSTANT_MAP = {
@@ -28,7 +28,7 @@ export const JS_TRACKER_ERROR_CONSTANT_MAP = {
   6: 'ERROR_VIDEO',
   7: 'ERROR_CONSOLE',
   8: 'ERROR_TRY_CATCH'
-};
+}
 
 export const JS_TRACKER_ERROR_DISPLAY_MAP = {
   1: 'JS_RUNTIME_ERROR',
@@ -39,7 +39,7 @@ export const JS_TRACKER_ERROR_DISPLAY_MAP = {
   6: 'VIDEO_LOAD_ERROR',
   7: 'CONSOLE_ERROR',
   8: 'TRY_CATCH_ERROR'
-};
+}
 
 // 默认配置
 export const DEFAULT_CONFIG = {
@@ -80,6 +80,6 @@ export const DEFAULT_CONFIG = {
   // 因此需要业务方传入一个处理函数, 根据当前url解析出真实的页面类型(例如: 二手房列表/经纪人详情页), 以便灯塔系统对错误来源进行分类
   // getPageType函数执行时会被传入一个location对象, 业务方需要完成该函数, 返回对应的的页面类型(50字以内, 建议返回汉字, 方便查看), 默认是返回当前页面的url
   getPageType: (location = window.location) => {
-    return `${location.host}${location.pathname}`;
+    return `${location.host}${location.pathname}`
   }
-};
+}

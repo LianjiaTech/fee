@@ -6,10 +6,13 @@ const orgXMLHttpRequest = window.XMLHttpRequest
  * 创建 proxyXMLHttpRequest
  * @param orXMLHttpRequestƒƒ
  */
-export default function createProxyXMLHttpRequest (requestAction, responseAction) {
-  return function () {
+export default function createProxyXMLHttpRequest(
+  requestAction,
+  responseAction
+) {
+  return function() {
     const xhr = new orgXMLHttpRequest()
-    function onload (args, oriFunc) {
+    function onload(args, oriFunc) {
       if (this.readyState === 4) {
         responseAction()
       }
@@ -17,7 +20,7 @@ export default function createProxyXMLHttpRequest (requestAction, responseAction
       oriFunc(args)
     }
     return hookAnyThing.call(this, xhr, {
-      open (args, oriFunc) {
+      open(args, oriFunc) {
         // 这里计入请求发送队列，对并发得请求数做限制，最大不超过5个请求同时发送
         const [method, url] = args
         requestAction(url, method)

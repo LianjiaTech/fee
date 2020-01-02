@@ -6,11 +6,15 @@ module.exports = {
   },
   env: {
 		browser: true,
-		node: true
+    node: true,
+    es6: true
   },
   extends: ['eslint:recommended', 'prettier', 'plugin:prettier/recommended'],
   // required to lint *.js files
   plugins: ['prettier'],
+  globals: {
+    "Promise": "readable"
+  },
   // add your custom rules here
 	rules: {
 		"no-console": "off",

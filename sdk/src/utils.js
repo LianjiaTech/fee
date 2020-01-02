@@ -219,7 +219,7 @@ export function getDeviceId() {
     deviceId = getUUID()
     let hostname = location.hostname
     let domain = parseDomain(hostname)
-    // cookie需要种在主域名上, 否则像bj.ke.com/sh.ke.com下的设备数就炸了
+    // cookie需要种在主域名上
     Cookies.set(COOKIE_NAME_DIVICE_ID, deviceId, {
       expires: 1000,
       domain: domain
