@@ -5,6 +5,8 @@ import _ from 'lodash'
 import RouterConfigBuilder from '~/src/library/utils/modules/router_config_builder'
 import API_RES from '~/src/constants/api_res'
 import MProjetMember from '~/src/model/project/project_member'
+import MProjetDaily from '~/src/model/project/daily'
+import MProject from '~/src/model/project/project'
 import MUser from '~/src/model/project/user'
 import http from '~/src/library/http'
 import ucConfig from '~/src/configs/user_center'
@@ -12,18 +14,64 @@ import Logger from '~/src/library/logger'
 import moment from 'moment'
 import UC from '~/src/library/uc'
 
+/**
+ *   为新添加的成员自动订阅该项目的日报
+ *   ucid,
+ *   email,
+ *   needCallback,
+ *   protocol,
+ *   callbackUrl,
+ *   send_time: sendTime,
+ *   project_id: item.id,
+ *   project_display_name: item.name
+ */
+function handleAddSubscribe () {
+  let insertList = []
+  return async function insert (data) {
+    if (!data) {
+      return MProjetDaily.add(insertList)
+    }
+    let { ucid, projectId } = data
+    let { email } = await MUser.get(ucid)
+    let { display_name: name } = await MProject.get(projectId)
+    let subscribedList = await MProjetDaily.getSubscriptionList({ ucid })
+    let subscribedObj = _.get(subscribedList, [0], {})
+    // 过滤掉已经订阅的项目
+    let exist = _.findIndex(subscribedList, (item) => item.project_id == projectId) > -1
+    if (exist) return insert
+    let insertData = {
+      ucid,
+      email,
+      need_callback: _.get(subscribedObj, ['need_callback'], 0),
+      protocol: _.get(subscribedObj, ['protocol'], 'http'),
+      callback_url: _.get(subscribedObj, ['callback_url'], ''),
+      send_time: _.get(subscribedObj, ['send_time'], MProjetDaily.SENDTIME),
+      project_id: projectId,
+      project_display_name: name
+    }
+    insertList.push(insertData)
+    return insert
+  }
+}
+
 // 添加项目成员，要获取项目id(在路由里)，ucid(body里)，role(body里)，need_alarm(body里)
 let add = RouterConfigBuilder.routerConfigBuilder('/api/project/member/add', RouterConfigBuilder.METHOD_TYPE_POST, async (req, res) => {
   let body = _.get(req, ['body'], {})
   // 支持按ucidList添加
   let ucidList = _.get(body, ['ucid_list'], [])
   let role = _.get(body, ['role'], MProjetMember.ROLE_DEV)
+  let pidList = _.get(body, ['pids'], [])
   let needAlarm = parseInt(_.get(body, ['need_alarm'], 0))
   let createUcid = _.get(req, ['fee', 'user', 'ucid'], '0')
   let projectId = _.get(req, ['fee', 'project', 'projectId'], 0)
   let updateUcid = createUcid
+  let errorMsg = ''
+
   if (_.isInteger(needAlarm) === false) {
-    res.send(API_RES.showError('needAlarm参数错误'))
+    return res.send(API_RES.showError('needAlarm参数错误'))
+  }
+  if (!pidList.length) {
+    return res.send(API_RES.showError('缺少项目列表参数'))
   }
 
   // 检查权限
@@ -34,123 +82,133 @@ let add = RouterConfigBuilder.routerConfigBuilder('/api/project/member/add', Rou
   }
 
   if (_.isEmpty(ucidList)) {
-    res.send(API_RES.showResult([], '添加完毕'))
-    return
+    return res.send(API_RES.showResult([], '添加完毕'))
   }
-
-  let anyOneSuccess = false
-  for (let ucid of ucidList) {
-    ucid = parseInt(ucid)
-    if (_.isInteger(ucid) === false || ucid <= 0) {
-      // ucid不合法
+  let handleInsert = handleAddSubscribe()
+  let anyOneSuccess = true
+  for (let pid of pidList) {
+    if (!_.isInteger(pid) || pid <= 0) {
       continue
     }
-    // 检查user里是否有ucid对应的记录
-    const rawUser = await MUser.get(ucid)
-    if (_.isEmpty(rawUser) || rawUser.is_delete === 1) {
-      let ts
-      let headers
-      const appId = ucConfig.appID
-      const appkey = ucConfig.appkey
-      let sign
-      ts = moment().unix() * 1000
-      const params = {
-        ids: ucid
-      }
-      headers = {
-        ts,
-        appId
-      }
-      sign = UC.getSign(params, headers, appkey)
-      headers.sign = sign
-      let userInfoResponse = await http.get(ucConfig.api + '/ehr/user/agent', {
-        params,
-        headers
-      }).catch(err => {
-        Logger.warn('用户信息接口响应异常 err =>', _.get(err, ['response', 'data'], {}))
-        return _.set(
-          {},
-          ['data', 'msg'],
-          _.get(err, ['response', 'data'], {})
-        )
-      })
-      let userInfo = _.get(userInfoResponse, ['data', 'data', 0], {})
-      if (_.isEmpty(userInfo)) {
+    for (let ucid of ucidList) {
+      ucid = parseInt(ucid)
+      if (_.isInteger(ucid) === false || ucid <= 0) {
+        // ucid不合法
         continue
       }
-      // 从登录结果中提取数据
-      let account = _.get(userInfo, ['account'], '')
-      let mobile = _.get(userInfo, ['mobile'], '') // 手机号
-      let nickname = _.get(userInfo, ['name'], '') // 昵称
-      let email = _.get(userInfo, ['email'], `${account}@qq.com`) // 邮箱
-      let avatarUrl = _.get(userInfo, ['avatar'], MUser.DEFAULT_AVATAR_URL) // 头像
+      // 检查user表里是否有ucid对应的记录，用于以后用户登录获取用户信息
+      const rawUser = await MUser.get(ucid)
+      if (_.isEmpty(rawUser) || rawUser.is_delete === 1) {
+        let ts
+        let headers
+        const appId = ucConfig.appID
+        const appkey = ucConfig.appkey
+        let sign
+        ts = moment().unix() * 1000
+        const params = {
+          ids: ucid
+        }
+        headers = {
+          ts,
+          appId
+        }
+        sign = UC.getSign(params, headers, appkey)
+        headers.sign = sign
+        let userInfoResponse = await http.get(ucConfig.api + '/ehr/user/agent', {
+          params,
+          headers
+        }).catch(err => {
+          Logger.warn('用户信息接口响应异常 err =>', _.get(err, ['response', 'data'], {}))
+          return _.set({}, ['data', 'msg'], _.get(err, ['response', 'data'], {}))
+        })
+        let userInfo = _.get(userInfoResponse, ['data', 'data', 0], {})
+        if (_.isEmpty(userInfo)) {
+          continue
+        }
+        // 从登录结果中提取数据
+        let account = _.get(userInfo, ['account'], '')
+        let mobile = _.get(userInfo, ['mobile'], '') // 手机号
+        let nickname = _.get(userInfo, ['name'], '') // 昵称
+        let email = _.get(userInfo, ['email'], `${account}@ke.com`) // 邮箱
+        let avatarUrl = _.get(userInfo, ['avatar'], MUser.DEFAULT_AVATAR_URL) // 头像
 
-      // 避免null值
-      if (_.isNil(mobile)) {
-        mobile = ''
-      }
-      if (_.isNil(nickname)) {
-        nickname = ''
-      }
-      if (_.isNil(email)) {
-        email = `${account}@qq.com`
-      }
-      if (_.isNil(avatarUrl)) {
-        avatarUrl = MUser.DEFAULT_AVATAR_URL
-      }
+        // 避免null值
+        if (_.isNil(mobile)) {
+          mobile = ''
+        }
+        if (_.isNil(nickname)) {
+          nickname = ''
+        }
+        if (_.isNil(email)) {
+          email = `${account}@ke.com`
+        }
+        if (_.isNil(avatarUrl)) {
+          avatarUrl = MUser.DEFAULT_AVATAR_URL
+        }
 
-      let isRegisterSuccess = await MUser.register(account, {
-        account,
-        mobile,
-        ucid,
-        nickname,
-        email,
-        avatarUrl
-      })
-      if (isRegisterSuccess === false) {
+        let isRegisterSuccess = await MUser.register(account, {
+          account,
+          mobile,
+          ucid,
+          nickname,
+          email,
+          avatarUrl
+        })
+        if (isRegisterSuccess === false) {
+          continue
+        }
+      }
+      // 同时向日报订阅表中插入一条记录
+      await handleInsert({ ucid, projectId: pid }).catch(err => Logger.warn('追加日报订阅记录失败，失败原因 ===>>', err.message || err.stack || err))
+      // 检查member表中，该项目是否存在此ucid
+      let record = await MProjetMember.getByProjectIdAndUcid(pid, ucid)
+
+      // 不在数据库中, 直接添加到列表中
+      if (_.isEmpty(record)) {
+        let insertData = {
+          ucid,
+          project_id: pid,
+          role,
+          need_alarm: needAlarm,
+          create_ucid: createUcid,
+          update_ucid: updateUcid
+        }
+        let isSuccess = await MProjetMember.add(insertData).catch(e => {
+          errorMsg = e.message || e.stack || e
+        })
+        console.log(isSuccess, '=======')
+        anyOneSuccess = anyOneSuccess || isSuccess
         continue
       }
-    }
 
-    // 检查数据库中，该项目是否存在此ucid，一个人在数据库中不能添加两次
-    let record = await MProjetMember.getByProjectIdAndUcid(projectId, ucid)
+      const { id, is_delete: isDelete } = record
+      if (isDelete === 0) {
+        // 已有数据, continue
+        continue
+      }
 
-    // 不在数据库中, 直接添加到列表中
-    if (_.isEmpty(record)) {
-      let insertData = {
-        ucid,
-        project_id: projectId,
+      // 已有数据, 但被删掉了, 还原之
+      let updateData = {
+        is_delete: 0,
+        update_ucid: updateUcid,
         role,
-        need_alarm: needAlarm,
-        create_ucid: createUcid,
-        update_ucid: updateUcid
+        need_alarm: needAlarm
       }
-      let isSuccess = await MProjetMember.add(insertData)
+      let isSuccess = await MProjetMember.update(id, updateData).catch(e => {
+        errorMsg = e.message || e.stack || e
+      })
+      // 同时向日报订阅表中插入一条记录
+      await handleInsert({ ucid, projectId: pid }).catch(err => Logger.warn('追加日报订阅记录失败，失败原因 ===>>', err.message || err.stack || err))
       anyOneSuccess = anyOneSuccess || isSuccess
-      continue
     }
-
-    const { id, is_delete: isDelete } = record
-    if (isDelete === 0) {
-      // 已有数据, continue
-      continue
-    }
-
-    // 已有数据, 但被删掉了, 还原之
-    let updateData = {
-      is_delete: 0,
-      update_ucid: updateUcid,
-      role,
-      need_alarm: needAlarm
-    }
-    let isSuccess = await MProjetMember.update(id, updateData)
-    anyOneSuccess = anyOneSuccess || isSuccess
   }
+  // 最后统一插入
+  await handleInsert().catch(err => Logger.warn('追加日报订阅记录失败，失败原因 ===>>', err.message || err.stack || err))
 
   if (anyOneSuccess) {
     res.send(API_RES.showResult([], '添加完毕'))
   } else {
-    res.send(API_RES.showError([], '添加失败,请重试'))
+    res.send(API_RES.showError(`添加失败：${errorMsg}，请重试`))
   }
 })
 
@@ -198,6 +256,7 @@ let list = RouterConfigBuilder.routerConfigBuilder('/api/project/member/list', R
 
 let deleteProject = RouterConfigBuilder.routerConfigBuilder('/api/project/member/delete', RouterConfigBuilder.METHOD_TYPE_GET, async (req, res) => {
   let id = parseInt(_.get(req, ['query', 'id'], 0))
+  let ucidId = parseInt(_.get(req, ['query', 'ucidId'], 0))
   let projectId = _.get(req, ['fee', 'project', 'projectId'], 1)
   let updateUcid = parseInt(_.get(req, ['fee', 'user', 'ucid'], '0'))
 
@@ -217,7 +276,11 @@ let deleteProject = RouterConfigBuilder.routerConfigBuilder('/api/project/member
     is_delete: 1,
     update_ucid: updateUcid
   }
+
   let isSuccess = await MProjetMember.update(id, updateData)
+  // 删除成员的同时也要删除日报订阅表中的记录
+  await MProjetDaily.deleteRecords(ucidId, projectId)
+
   if (isSuccess) {
     res.send(API_RES.showResult([], '删除成功'))
   } else {

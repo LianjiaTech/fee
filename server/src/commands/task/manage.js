@@ -11,7 +11,6 @@ import commonConfig from '~/src/configs/common'
 import path from 'path'
 import schedule from 'node-schedule'
 
-const isUsingKafka = _.get(commonConfig, ['use', 'kafka'], true)
 let projectBaseUri = path.resolve(__dirname, '../../../') // 项目所在文件夹
 class TaskManager extends Base {
   static get signature () {
@@ -32,7 +31,6 @@ class TaskManager extends Base {
    */
   async handle (args, options) {
     this.log('任务主进程启动')
-
     this.log('关闭其他TaskManager进程')
     await this.closeOtherTaskManager()
     this.log('其他TaskManager进程已关闭')
@@ -48,12 +46,12 @@ class TaskManager extends Base {
     // 注册定时任务
     this.log('注册每分钟执行一次的任务')
     this.registerTaskRepeatPer1Minute()
-    this.log('注册每10分钟执行一次的任务')
-    this.registerTaskRepeatPer10Minute()
     this.log('注册每1小时执行一次的任务')
     this.registerTaskRepeatPer1Hour()
     this.log('注册每6小时执行一次的任务')
     this.registerTaskRepeatPer6Hour()
+    this.log('注册每天执行一次的任务')
+    this.registerTaskRepeatPerEveryDay()
     this.log('全部定时任务注册完毕, 等待执行')
   }
 
@@ -63,7 +61,7 @@ class TaskManager extends Base {
     this.log(`检测命令 => ${command}`)
     let rawCommandOutput = shell.exec(command, {
       async: false,
-      silent: true
+      silent: true,
     })
     let rawCommandOutputList = rawCommandOutput.split('\n')
     let taskManagerPidList = []
@@ -105,7 +103,8 @@ class TaskManager extends Base {
     }
     // PM2 3.2.2 有bug, 无法保证TaskManager只有一个实例, 因此需要主动进行检测
     // 否则, 直接终止该进程
-    let alertMessage = '仍然有残留TaskManager进程, 程序不能保证正常执行, 自动退出. 剩余 TaskManager pid List => ' + JSON.stringify(taskManagerPidList)
+    let alertMessage = '仍然有残留TaskManager进程, 程序不能保证正常执行, 自动退出. 剩余 TaskManager pid List => ' +
+      JSON.stringify(taskManagerPidList)
     this.warn(alertMessage)
     Alert.sendMessage(WatchIdList.WATCH_UCID_LIST_DEFAULT, alertMessage)
     // 花式自尽
@@ -119,90 +118,20 @@ class TaskManager extends Base {
   async registerTaskRepeatPer1Minute () {
     let that = this
     // 每分钟的第0秒启动
-    schedule.scheduleJob('0 */1 * * * * *', function () {
+    schedule.scheduleJob('0 */1 * * * *', function () {
       that.log('registerTaskRepeatPer1Minute 开始执行')
 
-      let nowByMinute = moment().format(DATE_FORMAT.COMMAND_ARGUMENT_BY_MINUTE)
-      let twoMinuteAgoByMinute = moment().subtract(2, DATE_FORMAT.UNIT.MINUTE).format(DATE_FORMAT.COMMAND_ARGUMENT_BY_MINUTE)
-      let threeMinuteAgoByMinute = moment().subtract(3, DATE_FORMAT.UNIT.MINUTE).format(DATE_FORMAT.COMMAND_ARGUMENT_BY_MINUTE)
-      let fourMinuteAgoByMinute = moment().subtract(4, DATE_FORMAT.UNIT.MINUTE).format(DATE_FORMAT.COMMAND_ARGUMENT_BY_MINUTE)
-      let fiveMinuteAgoByMinute = moment().subtract(5, DATE_FORMAT.UNIT.MINUTE).format(DATE_FORMAT.COMMAND_ARGUMENT_BY_MINUTE)
-      let tenMinuteAgoByMinute = moment().subtract(10, DATE_FORMAT.UNIT.MINUTE).format(DATE_FORMAT.COMMAND_ARGUMENT_BY_MINUTE)
+      that.log(`[按分钟] 每分钟启动一次Utils:HeartBeat, 发送心跳数据 `)
+      that.execCommand('Utils:HeartBeat', [])
 
-      that.log(`[按分钟] 每分钟启动一次SaveLog `)
-      if (isUsingKafka) {
-        that.execCommand('SaveLog:Kafka', [])
-      } else {
-        that.execCommand('SaveLog:Nginx', [])
-      }
+      // let twoMinuteAgoByMinute = moment().subtract(2, DATE_FORMAT.UNIT.MINUTE).format(DATE_FORMAT.COMMAND_ARGUMENT_BY_MINUTE)
+      // that.log(`[按分钟] 每分钟启动一次Parse:UploadToElasticSearch, 上传原始日志`)
+      // that.execCommand('Parse:UploadToElasticSearch',
+      //   [twoMinuteAgoByMinute, twoMinuteAgoByMinute])
+
       that.log(`[按分钟] 每分钟启动一次WatchDog:Alarm, 监控平台运行情况 `)
       that.execCommand('WatchDog:Alarm', [])
-
-      that.log(`[按分钟] 解析kafka日志, 分析错误详情`)
-      that.dispatchParseCommand('Parse:Monitor', twoMinuteAgoByMinute, nowByMinute)
-
-      that.log(`[按分钟] 每分钟运行Summary:Error, 分别统计前2,3,4,5,10分钟内的数据`)
-      that.dispatchParseCommand('Summary:Error', twoMinuteAgoByMinute, DATE_FORMAT.UNIT.MINUTE)
-      that.dispatchParseCommand('Summary:Error', threeMinuteAgoByMinute, DATE_FORMAT.UNIT.MINUTE)
-      that.dispatchParseCommand('Summary:Error', fourMinuteAgoByMinute, DATE_FORMAT.UNIT.MINUTE)
-      that.dispatchParseCommand('Summary:Error', fiveMinuteAgoByMinute, DATE_FORMAT.UNIT.MINUTE)
-      that.dispatchParseCommand('Summary:Error', tenMinuteAgoByMinute, DATE_FORMAT.UNIT.MINUTE)
-
       that.log('registerTaskRepeatPer1Minute 命令分配完毕')
-    })
-  }
-
-  /**
-   * 每10分钟启动一次
-   */
-  async registerTaskRepeatPer10Minute () {
-    let that = this
-    // 每10分钟的第30秒启动
-    schedule.scheduleJob('15 */10 * * * * *', function () {
-      that.log('registerTaskRepeatPer10Minute 开始执行')
-
-      let nowByHour = moment().format(DATE_FORMAT.COMMAND_ARGUMENT_BY_HOUR)
-      let nowByMinute = moment().format(DATE_FORMAT.COMMAND_ARGUMENT_BY_MINUTE)
-
-      let oneHourAgoByHour = moment().subtract(1, DATE_FORMAT.UNIT.HOUR).format(DATE_FORMAT.COMMAND_ARGUMENT_BY_HOUR)
-
-      let fifteenMinuteAgoByminute = moment().subtract(15, DATE_FORMAT.UNIT.MINUTE).format(DATE_FORMAT.COMMAND_ARGUMENT_BY_MINUTE)
-
-      // 周期性执行命令
-      let intervalCommandList = [
-        'CreateCache:UpdatePerOneMinute'
-      ]
-      for (let intervalCommand of intervalCommandList) {
-        // 周期性执行命令
-        that.execCommand(intervalCommand)
-      }
-
-      let parseCommandList = [
-        'Parse:UV',
-        'Parse:TimeOnSiteByHour',
-        'Parse:Performance',
-        'Parse:Monitor'
-      ]
-      for (let parseCommand of parseCommandList) {
-        // 解析最近15分钟内的数据
-        that.dispatchParseCommand(parseCommand, fifteenMinuteAgoByminute, nowByMinute)
-      }
-
-      // 汇总命令
-      let summaryCommandList = [
-        'Summary:UV',
-        'Summary:NewUser',
-        'Summary:Performance',
-        'Summary:Error'
-      ]
-      for (let summaryCommand of summaryCommandList) {
-        // 当前小时
-        that.dispatchParseCommand(summaryCommand, nowByHour, DATE_FORMAT.UNIT.HOUR)
-        // 一小时前
-        that.dispatchParseCommand(summaryCommand, oneHourAgoByHour, DATE_FORMAT.UNIT.HOUR)
-      }
-
-      that.log('registerTaskRepeatPer10Minute 命令分配完毕')
     })
   }
 
@@ -212,39 +141,26 @@ class TaskManager extends Base {
   async registerTaskRepeatPer1Hour () {
     let that = this
     // 每小时15分30秒启动
-    schedule.scheduleJob('30 15 * * * * *', function () {
+    schedule.scheduleJob('30 15 * * * *', function () {
+      // backup模式下只跑save2log和清除日志
+      if (env === 'backup') return
       that.log('registerTaskRepeatPer1Hour 开始执行')
-
-      let nowByDay = moment().format(DATE_FORMAT.COMMAND_ARGUMENT_BY_DAY)
-      let nowByMinute = moment().format(DATE_FORMAT.COMMAND_ARGUMENT_BY_MINUTE)
-
-      let lastDayStartAtByMinute = moment().subtract(1, DATE_FORMAT.UNIT.DAY).startOf(DATE_FORMAT.UNIT.DAY).format(DATE_FORMAT.COMMAND_ARGUMENT_BY_MINUTE)
-
-      // 解析命令
-      let parseCommandList = [
-        'Parse:Device',
-        'Parse:MenuClick',
-        'Parse:UserFirstLoginAt'
-      ]
-      for (let parseCommand of parseCommandList) {
-        // 解析昨天到今天的数据
-        that.dispatchParseCommand(parseCommand, lastDayStartAtByMinute, nowByMinute)
-      }
-
-      // 汇总命令
-      let summaryCommandList = [
-        'Summary:UV',
-        'Summary:NewUser',
-        'Summary:Performance',
-        'Summary:Error',
-        'Summary:TimeOnSite'
-      ]
-      for (let summaryCommand of summaryCommandList) {
-        // 当日数据
-        that.dispatchParseCommand(summaryCommand, nowByDay, DATE_FORMAT.UNIT.DAY)
-      }
-
+      that.execCommand('Summary:PerformaceUrlList')
       that.log('registerTaskRepeatPer1Hour 命令分配完毕')
+    })
+
+    // 每小时00分00秒启动
+    schedule.scheduleJob('00 00 */1 * * *', function () {
+      let nodDay = moment()
+      let nodDayByDay = nodDay.format(DATE_FORMAT.COMMAND_ARGUMENT_BY_DAY)
+      that.log(`DailySubscriptionReport ${nodDayByDay} 开始执行`)
+      // 日报
+      that.execCommand('Summary:DailySubscriptionReport', [nodDayByDay, DATE_FORMAT.UNIT.DAY])
+      // 周报
+      if (nodDay.day() === 1) {
+        that.execCommand('Summary:DailySubscriptionReport', [nodDayByDay, DATE_FORMAT.UNIT.WEEK])
+      }
+      that.log('DailySubscriptionReport 命令分配完毕')
     })
   }
 
@@ -254,52 +170,51 @@ class TaskManager extends Base {
   async registerTaskRepeatPer6Hour () {
     let that = this
     // 每过6小时, 在35分45秒启动
-    schedule.scheduleJob('45 35 */6 * * * *', function () {
+    schedule.scheduleJob('45 35 */6 * * *', function () {
       that.log('registerTaskRepeatPer6Hour 开始执行')
-      let nowByMonth = moment().format(DATE_FORMAT.COMMAND_ARGUMENT_BY_MONTH)
+      // 清理历史log
+      that.execCommand('Utils:ZipOldLog')
+      //  that.execCommand('Utils:CleanOldLog')
+      that.log('registerTaskRepeatPer6Hour 命令分配完毕')
+    })
+  }
 
-      let oneMonthAgo = moment().subtract(1, DATE_FORMAT.UNIT.MONTH)
-      let oneMonthAgoByMonth = oneMonthAgo.format(DATE_FORMAT.COMMAND_ARGUMENT_BY_MONTH)
+  /**
+   * 每天启动一次
+   */
+  async registerTaskRepeatPerEveryDay () {
+    let that = this
+    // 每天00点15启动
+    schedule.scheduleJob('00 15 00 * * *', () => {
+      // backup模式下只跑save2log和清除日志
+      if (env === 'backup') return
 
-      let oneDayAgo = moment().subtract(1, DATE_FORMAT.UNIT.DAY)
-      let oneDayAgoByDay = oneDayAgo.format(DATE_FORMAT.COMMAND_ARGUMENT_BY_DAY)
-
-      // 汇总命令-昨日数据
-      let summaryCommandList = [
-        'Summary:UV',
-        'Summary:NewUser',
-        'Summary:Performance',
-        'Summary:Error',
-        'Summary:TimeOnSite'
+      that.log('registerTaskRepeatPerEveryDay 开始执行')
+      const summaryCommandList = [
+        ...(env !== 'development' ? ['Summary:DailyReportAll', 'Summary:DailyFileReport'] : [])
       ]
+      let nodDay = moment()
+      let nodDayByDay = nodDay.format(DATE_FORMAT.COMMAND_ARGUMENT_BY_DAY)
       for (let summaryCommand of summaryCommandList) {
         // 当日数据
-        that.dispatchParseCommand(summaryCommand, oneDayAgoByDay, DATE_FORMAT.UNIT.DAY)
+        that.log(`开始执行：${summaryCommand}`)
+        that.dispatchParseCommand(summaryCommand, nodDayByDay, DATE_FORMAT.UNIT.DAY)
+        // 周报任务
+        if (nodDay.day() === 1 && summaryCommand === 'Summary:DailyReportAll') {
+          that.dispatchParseCommand(summaryCommand, nodDayByDay, DATE_FORMAT.UNIT.WEEK)
+        }
       }
-
-      // 汇总命令-按月统计
-      let summaryByMonthCommandList = [
-        'Summary:UV',
-        'Summary:NewUser',
-        'Summary:Performance',
-        'Summary:TimeOnSite',
-
-        'Summary:SystemBrowser',
-        'Summary:SystemDevice',
-        'Summary:SystemOS'
-        // 'Summary:SystemRuntimeVersion'
-      ]
-      for (let summaryCommand of summaryByMonthCommandList) {
-        // 当月数据
-        that.dispatchParseCommand(summaryCommand, nowByMonth, DATE_FORMAT.UNIT.MONTH)
-        // 上月数据
-        that.dispatchParseCommand(summaryCommand, oneMonthAgoByMonth, DATE_FORMAT.UNIT.MONTH)
-      }
-
+      that.log('registerTaskRepeatPerEveryDay 日报任务执行完成')
+    })
+    // 每天23:10:00启动
+    schedule.scheduleJob('00 10 23 * * *', () => {
       // 清理历史log
-      that.execCommand('Utils:CleanOldLog')
+      that.execCommand('Clear:ClearErrorAlarmLog', [7])
 
-      that.log('registerTaskRepeatPer6Hour 命令分配完毕')
+      that.log(`定时关闭/删除索引任务 开始执行`)
+      // that.execCommand('Utils:CloseIndex', ['close'])
+      that.execCommand('Utils:CloseIndex', ['delete'])
+      that.log(`定时关闭/删除索引任务 执行完毕`)
     })
   }
 
@@ -314,8 +229,8 @@ class TaskManager extends Base {
     this.execCommand(commandName,
       [
         startAtStr, // startAtYmdHi:
-        endAtStr // endAtYmdHi
-      ]
+        endAtStr, // endAtYmdHi
+      ],
     )
   }
 
@@ -326,12 +241,13 @@ class TaskManager extends Base {
    * @param {*} summaryType
    */
   async dispatchSummaryCommand (commandName, countAtStr, summaryType) {
-    this.log(`${commandName}任务开始, 处理时间 => ${countAtStr}, 时间类型 => ${summaryType}`)
+    this.log(
+      `${commandName}任务开始, 处理时间 => ${countAtStr}, 时间类型 => ${summaryType}`)
     this.execCommand(commandName,
       [
         countAtStr, // summaryAtTime:
-        summaryType // summaryType
-      ]
+        summaryType, // summaryType
+      ],
     )
   }
 
@@ -343,12 +259,13 @@ class TaskManager extends Base {
     let commandStartAtms = moment().valueOf()
     shell.exec(command, {
       async: true,
-      silent: true
+      silent: true,
     }, () => {
       let commandFinishAtFormated = moment().format(DATE_FORMAT.DISPLAY_BY_MILLSECOND)
       let commandFinishAtms = moment().valueOf()
       let during = (commandFinishAtms - commandStartAtms) / 1000
-      this.log(`${command}命令执行完毕, 共用时${during}秒, 开始执行时间=> ${commandStartAtFormated}, 执行完毕时间=> ${commandFinishAtFormated}`)
+      this.log(
+        `${command}命令执行完毕, 共用时${during}秒, 开始执行时间=> ${commandStartAtFormated}, 执行完毕时间=> ${commandFinishAtFormated}`)
     })
   }
 }

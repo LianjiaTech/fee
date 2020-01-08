@@ -1,6 +1,7 @@
 import express from 'express'
 import PrivilegeChecker from '~/src/middlewares/privilege'
-import RouterConfigBuilder from '~/src/library/utils/modules/router_config_builder'
+import RouterConfigBuilder
+  from '~/src/library/utils/modules/router_config_builder'
 import Api from '~/src/routes/api'
 import Logger from '~/src/library/logger'
 
@@ -17,7 +18,7 @@ const loginProjectRouter = express.Router()
 const loginCommonRouter = express.Router()
 
 let routerConfigMap = {
-  ...Api
+  ...Api,
 }
 
 /**
@@ -73,7 +74,7 @@ withoutLoginRouter.get('/', (req, res) => {
     title1: '建设进展',
     title2: '应用进展',
     title3: '同类设施',
-    title4: '情报报告'
+    title4: '情报报告',
   })
 })
 

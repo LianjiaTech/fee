@@ -63,7 +63,7 @@ async function add (data) {
     `project_id`,
     `ucid`,
     `role`,
-    `nead_alarm`,
+    `need_alarm`,
     `create_ucid`,
     `update_ucid`
   ]) {
@@ -183,20 +183,19 @@ async function update (id, updateData) {
  * 获取某一成员下所有项目列表
  * @param {*} ucid 成员的ucid
  */
-async function getProjectMemberListByUcid (ucid, offset, max) {
+async function getProjectMemberListByUcid (ucid, offset = 0, max) {
   const tableName = getTableName()
-  let rawRecordList = await Knex
+  let knexInstance = Knex
     .select(TABLE_COLUMN)
     .from(tableName)
     .where('ucid', ucid)
     .andWhere('is_delete', 0)
     .offset(offset)
-    .limit(max)
-    .catch(err => {
-      Logger.log(err.message, 'project_member    getProjectIdList   出错')
-      return []
-    })
-
+  if (max) knexInstance = knexInstance.limit(max)
+  let rawRecordList = await knexInstance.catch(err => {
+    Logger.log(err.message, 'project_member    getProjectIdList   出错')
+    return []
+  })
   // 获取默认项目列表，造数据添加权限
   let templateRecord = {
     id: 0,
@@ -209,13 +208,9 @@ async function getProjectMemberListByUcid (ucid, offset, max) {
     update_time: 0,
     update_ucid: 0
   }
-  let projectMemberMap = {}
-  for (let rawRecord of rawRecordList) {
-    const { project_id: projectId } = rawRecord
-    projectMemberMap[projectId] = 1
-  }
+
   for (let openProjectId of ProjectConfig.OPEN_PROJECT_ID_LIST) {
-    if (_.has(projectMemberMap, [openProjectId]) === false) {
+    if (!rawRecordList.length) {
       let template = {
         ...templateRecord,
         project_id: openProjectId

@@ -1,0 +1,4 @@
+export const BASE_REDIS_LAST_WATCH_TIME = 'plat_fe_fee_watch_alarm_last_watch_time'
+export const BASE_REDIS_LAST_WATCH_ERROR_COUNT = 'plat_fe_fee_watch_alarm_last_watch_error_count'
+export const BASE_REDIS_LAST_ERROR_ALARM_TIME = 'plat_fe_fee_watch_alarm_last_error_alarm_time'
+export const BASE_REDIS_LAST_PERF_ALARM_TIME = 'plat_fe_fee_watch_alarm_last_perf_alarm_time'

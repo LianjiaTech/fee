@@ -14,45 +14,37 @@ import ace from '@adonisjs/ace'
 const registedCommandList = [
   './commands/demo', //  命令demo
 
-  // 解析日志
-  './commands/parse/uv', //  解析uv
-  './commands/parse/time_on_site', // 解析用户停留时长
-  './commands/parse/device', //  解析device
-  './commands/parse/monitor', //  解析错误报警
-  './commands/parse/menu_click', //  解析菜单点击记录
-  './commands/parse/performance', //  解析性能统计指标数据
-  './commands/parse/user_first_login_at', //  录入新增用户
+  './commands/scroll/scroll', //  用于迁移或重建ES中的索引
 
-  './commands/save_log/parseKafkaLog', //  将kafka日志落在文件中
-  './commands/save_log/parseNginxLog', // 将ngnix日志落在文件中
   // 从数据库中, 按时间段统计
-  './commands/summary/uv', //  统计uv数据
-  './commands/summary/time_on_site', //  统计用户停留时长
-  './commands/summary/system_os.js', // 按月统计系统分布, 每天跑
-  './commands/summary/system_browser.js', // 按月统计浏览器分布, 每天跑
-  './commands/summary/system_device.js', // 按月统计设备分布, 每天跑
-  './commands/summary/system_runtime_version.js', // 按月统计版本分布，每天跑
-  './commands/summary/http_error.js', // 按天统计http error分布, 每天跑
-  './commands/summary/performance', //  按小时/天/月统计性能指标
-  './commands/summary/new_user_summary', //  统计新增用户数
-  './commands/summary/error_summary', // 统计某一错误的数量
+  './commands/summary/daily_report_subscription', // 根据订阅配置发送邮件，每小时跑
+  './commands/summary/daily_report_all_projects', // 发送所有项目汇总数据，每天发一次
+  './commands/summary/daily_report_summary', // 统计每日的报错和性能发邮件，每天跑
+  './commands/summary/daily_file_report_summary', // 统计每日的报错和性能发邮件，每天跑
+  './commands/summary/daily_count_summary', // 统计每日得错误，pv，uv 主要用于补日报没跑得数据
+  './commands/summary/per_hour_performance_url_list_summary', // 统计最近10天性能url到redis，避免查询慢的问题
   // 监控
-  './commands/watch_dog/saas', //  saas监控
   './commands/watch_dog/alarm',
 
-  './commands/create_cache/update_per_ten_minute', // 更新缓存
+  // 清除日志
+  './commands/clear_log/clear_error_log',
 
   // 任务调度
   './commands/task/manage', //  任务调度
+  './commands/task/consume/', //  消费kafka消息
 
   // 工具类命令
-  './commands/utils/template_sql', // 生成模板数据
   './commands/utils/generate_sql', //  生成SQL
   './commands/utils/clean_old_log', //  自动删除旧日志
-  './commands/utils/test', //  专业粘贴调试代码
+  './commands/utils/zip_old_log', // 压缩日志
+  './commands/utils/close_delete_index', //  定时关闭集群中的索引
 
   // 测试uc
-  './commands/utils/testUC'
+  './commands/utils/testUC',
+  // 心跳
+  './commands/utils/heart_beat',
+  // 初始化日报订阅表
+  './commands/utils/init_daily_subscription'
 ]
 
 // register commands

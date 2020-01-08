@@ -1,0 +1,33 @@
+{
+  "name": "fee-consume-kafka",
+  "script": "./dist/fee.js",
+  "cwd": "./",
+  "args": ["Consume:Kafka"],
+  "instances" : 6,
+  "exec_mode" : "cluster",
+  "watch": [
+    "dist"
+  ],
+  "ignore_watch": [
+    "node_modules",
+    "log",
+    "painting"
+  ],
+  "watch_options": {
+    "followSymlinks": true
+  },
+  "error_file": "./log/pm2/command/consume-kafka-err.log",
+  "out_file": "./log/pm2/command/consume-kafka-out.log",
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "env_production": {
+    "NODE_ENV": "production"
+  },
+  "env_testing": {
+    "NODE_ENV": "testing"
+  },
+  "env_backup": {
+    "NODE_ENV": "backup"
+  }
+}

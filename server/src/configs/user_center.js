@@ -4,7 +4,8 @@ import env from '~/src/configs/env'
 const production = {
   api: '',
   appkey: '',
-  appID: 123456
+  appID: 123456,
+  privateKey: ``
 }
 
 // 测试环境配置

@@ -9,6 +9,7 @@ import ucConfig from '~/src/configs/user_center'
 import http from '~/src/library/http'
 import moment from 'moment'
 import UC from '~/src/library/uc'
+import UCommon from '~/src/library/utils/modules/util'
 
 let detail = RouterConfigBuilder.routerConfigBuilder('/api/user/detail', RouterConfigBuilder.METHOD_TYPE_GET, async (req, res) => {
   let request = req.query
@@ -112,7 +113,8 @@ let searchUC = RouterConfigBuilder.routerConfigBuilder('/api/user/search_uc', Ro
 const register = RouterConfigBuilder.routerConfigBuilder('/api/user/register', RouterConfigBuilder.METHOD_TYPE_POST, async (req, res) => {
   const body = _.get(req, ['body'], {})
   const account = _.get(body, ['account'], '')
-  const password = _.get(body, ['password'], '')
+  let password = _.get(body, ['password'], '')
+  password = UCommon.decrypt(password)
   const nickname = _.get(body, ['nickname'], '')
   const email = account
   const registerType = MUser.REGISTER_TYPE_SITE

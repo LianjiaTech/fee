@@ -72,6 +72,33 @@ function getLogger4Command (commandName = 'unsetCommandName') {
 
   return getLogger(`command`, loggerConfig)
 }
+/**
+ *  为ES的检索、写入添加日志Logger
+ */
+function getLogger4Elastic (commandName = 'unsetCommandName') {
+  let loggerConfig = {
+    appenders: {
+      elastic: {
+        type: 'dateFile',
+        filename: `${config.absoluteLogPath}/elastic/${commandName}`,
+        pattern: '-yyyy-MM-dd.log',
+        alwaysIncludePattern: true
+      },
+      express: {
+        type: 'dateFile',
+        filename: `${config.absoluteLogPath}/express/runtime`,
+        pattern: '-yyyy-MM-dd.log',
+        alwaysIncludePattern: true
+      }
+    },
+    categories: {
+      default: { appenders: ['express'], level: 'info' },
+      elastic: { appenders: ['elastic'], level: 'info' }
+    }
+  }
+
+  return getLogger(`elastic`, loggerConfig)
+}
 let logger4Express = getLogger(`express`, baseLoggerConfig)
 /**
  * 追踪日志输出文件名,方法名,行号等信息
@@ -150,6 +177,7 @@ function error () {
 }
 
 export default {
+  getLogger4Elastic,
   getLogger4Command,
   log,
   info,

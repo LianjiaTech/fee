@@ -4,8 +4,8 @@ import Knex from '~/src/library/mysql'
 import dateFns from 'date-fns'
 import Logger from '~/src/library/logger'
 
-const MD5_SALT = '12345678901234567890123'
-const DEFAULT_PASSWORD = 'kehaolea'
+const MD5_SALT = '1234567890987654321'
+const DEFAULT_PASSWORD = '123456'
 
 const ROLE_DEV = 'dev'
 const ROLE_ADMIN = 'admin'
@@ -200,14 +200,14 @@ async function searchByAccount (account, offset = 0, max = 10) {
  * @param {number} offset    获取数据的偏移量
  * @param {number} max       一页最多展示的数据
  */
-async function getList (offset = 0, max = 10) {
+async function getList (offset = 0, max) {
   const tableName = getTableName()
-  const result = await Knex
-    .select(TABLE_COLUMN)
-    .from(tableName)
-    .limit(max)
-    .offset(offset)
-    .where('is_delete', '=', 0)
+  let knex = Knex.select(TABLE_COLUMN).from(tableName).offset(offset).where('is_delete', '=', 0)
+  knex = max ? knex.limit(max) : knex
+  const result = await knex.catch(err => {
+    Logger.log(err.message, 'getList出错')
+    return []
+  })
   return result
 }
 

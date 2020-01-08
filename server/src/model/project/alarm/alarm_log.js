@@ -33,14 +33,14 @@ async function insert (projectId, configId, sendAt, errorName, message) {
     create_time: createTime,
     update_time: updateTime
   }
-  const affectRows = Knex
+  const affectRows = await Knex
     .insert(insertData)
     .into(tableName)
     .catch(err => {
-      Logger.error(err.message)
-      return 0
+      Logger.error('alarm_log.js => insert', err)
+      return false
     })
-  return affectRows > 0
+  return affectRows
 }
 
 async function getAlarmLogInRange (projectId, startAt, endAt) {
@@ -63,7 +63,7 @@ async function getLineAlarmLogInRange (projectId, startAt, endAt) {
   let sqlGroupByFormat = DATE_FORMAT.SQL_GROUP_BY_HOUR
   const resultList = await Knex
     .count('* as log_count')
-    .select('config_id', 'error_name', Knex.raw(`FROM_UNIXTIME(\`send_at\`, '${sqlGroupByFormat}') as group_by`))
+    .select('config_id', 'error_type', 'error_name', Knex.raw(`FROM_UNIXTIME(\`send_at\`, '${sqlGroupByFormat}') as group_by`))
     .from(tableName)
     .where('send_at', '>', startAt)
     .andWhere('send_at', '<', endAt)

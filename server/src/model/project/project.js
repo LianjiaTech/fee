@@ -9,24 +9,28 @@ const TABLE_COLUMN = [
   `project_name`,
   `display_name`,
   `rate`,
+  `home_page`,
   `c_desc`,
+  'mail',
   `create_time`,
   `create_ucid`,
   `update_time`,
   `update_ucid`,
-  `is_delete`
+  `is_delete`,
 ]
 const DISPLAY_TABLE_COLUMN = [
   `id`,
   `project_name`,
   `display_name`,
   `rate`,
+  `home_page`,
   `c_desc`,
   `create_time`,
   `create_ucid`,
   `update_time`,
-  `update_ucid`
+  `update_ucid`,
 ]
+
 function getTableName () {
   return BASE_TABLE_NAME
 }
@@ -59,8 +63,11 @@ async function add (data) {
     `project_name`,
     `display_name`,
     `c_desc`,
+    `mail`,
+    `rate`,
+    `home_page`,
     `create_ucid`,
-    `update_ucid`
+    `update_ucid`,
   ]) {
     if (_.has(data, [column])) {
       insertData[column] = data[column]
@@ -70,19 +77,15 @@ async function add (data) {
     ...insertData,
     create_time: createTime,
     update_time: updateTime,
-    is_delete: 0
+    is_delete: 0,
   }
-  let insertResult = await Knex
-    .returning('id')
-    .insert(insertData)
-    .into(tableName)
-    .catch(err => {
-      Logger.log(err.message, 'project_item    add   出错')
-      return []
-    })
+  let insertResult = await Knex.returning('id').insert(insertData).into(tableName).catch(err => {
+    Logger.log(err.message, 'project_item    add   出错')
+    return []
+  })
   let id = _.get(insertResult, [0], 0)
 
-  return id > 0
+  return id
 }
 
 /**
@@ -91,31 +94,38 @@ async function add (data) {
  */
 async function get (id) {
   let tableName = getTableName()
-  let result = await Knex
-    .select(TABLE_COLUMN)
-    .from(tableName)
-    .where('id', '=', id)
-    .catch(err => {
-      Logger.log(err.message, 'project_item    get   出错')
-      return []
-    })
+  let result = await Knex.select(TABLE_COLUMN).from(tableName).where('id', '=', id).catch(err => {
+    Logger.log(err.message, 'project_item    get   出错')
+    return []
+  })
   let project = _.get(result, ['0'], {})
   return project
+}
+
+async function getProjectByProjectName (projectName) {
+  let tableName = getTableName()
+  let result = await Knex.select(TABLE_COLUMN).from(tableName).where('project_name', '=', projectName).catch(err => {
+    Logger.log(err.message, 'project_item    getProjectByProjectName   出错')
+    return [null]
+  })
+  return result[0]
 }
 
 /**
  * 项目列表
  */
-async function getList () {
+async function getList (ids = []) {
   let tableName = getTableName()
-  let result = await Knex
+  let knex = Knex
     .select(TABLE_COLUMN)
     .from(tableName)
     .where('is_delete', 0)
-    .catch(err => {
-      Logger.log(err.message, 'project_item    getlist   出错')
-      return []
-    })
+  if (ids.length > 0) knex = knex.whereIn('id', ids)
+
+  let result = await knex.catch(err => {
+    Logger.log(err.message, 'project_item    getlist   出错')
+    return []
+  })
   return result
 }
 
@@ -129,11 +139,13 @@ async function update (id, updateData) {
 
   let newRecord = {}
   for (let column of [
-    'project_name',
     'display_name',
+    'project_name',
     'c_desc',
-    'is_delete',
-    'update_ucid'
+    'update_ucid',
+    'home_page',
+    'mail',
+    'is_delete'
   ]) {
     if (_.has(updateData, [column])) {
       newRecord[column] = updateData[column]
@@ -141,16 +153,13 @@ async function update (id, updateData) {
   }
   newRecord = {
     ...newRecord,
-    update_time: nowAt
+    update_time: nowAt,
   }
   let tableName = getTableName()
-  let result = await Knex(tableName)
-    .update(newRecord)
-    .where('id', id)
-    .catch(err => {
-      Logger.log(err.message, 'project_item    update   出错')
-      return []
-    })
+  let result = await Knex(tableName).update(newRecord).where('id', id).catch(err => {
+    Logger.log(err.message, 'project_item    update   出错')
+    return []
+  })
   return result === 1
 }
 
@@ -161,8 +170,7 @@ async function update (id, updateData) {
 async function getProjectListById (idList) {
   let tableName = getTableName()
 
-  let result = await Knex
-    .select(TABLE_COLUMN)
+  let result = await Knex.select(TABLE_COLUMN)
     .from(tableName)
     .whereIn('id', idList)
     .andWhere('is_delete', 0)
@@ -172,6 +180,7 @@ async function getProjectListById (idList) {
     })
   return result
 }
+
 export default {
   get,
   getList,
@@ -183,5 +192,6 @@ export default {
   formatRecord,
 
   // 获取id对应的名
-  getProjectListById
+  getProjectListById,
+  getProjectByProjectName
 }

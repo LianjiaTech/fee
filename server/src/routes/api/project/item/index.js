@@ -17,7 +17,6 @@ let detail = RouterConfigBuilder.routerConfigBuilder('/api/project/item/detail',
   }
 
   let project = await MProject.get(id)
-  project = MProject.formatRecord(project)
 
   if (_.isEmpty(project)) {
     res.send(API_RES.showError(`项目id:${id}不存在`))
@@ -70,8 +69,10 @@ let list = RouterConfigBuilder.routerConfigBuilder('/api/project/item/list', Rou
       let project = MProject.formatRecord(rawProject)
       project = {
         ...project,
+        mail: rawProject.mail,
         role: MProjetMember.ROLE_OWNER,
-        need_alarm: 0
+        need_alarm: 0,
+        test_key: 123
       }
       projectList.push(project)
     }
@@ -97,8 +98,10 @@ let list = RouterConfigBuilder.routerConfigBuilder('/api/project/item/list', Rou
     const projectId = project['id']
     project = {
       ...project,
+      mail: rawProject.mail,
       role: _.get(projectMap, [projectId, 'role'], MProjetMember.ROLE_DEV),
-      need_alarm: _.get(projectMap, [projectId, 'need_alarm'], 0)
+      need_alarm: _.get(projectMap, [projectId, 'need_alarm'], 0),
+      test_key: 2345
     }
     projectList.push(project)
   }
@@ -106,8 +109,8 @@ let list = RouterConfigBuilder.routerConfigBuilder('/api/project/item/list', Rou
   res.send(API_RES.showResult(projectList))
 }, false)
 
-let deleteProject = RouterConfigBuilder.routerConfigBuilder('/api/project/item/delete', RouterConfigBuilder.METHOD_TYPE_GET, async (req, res) => {
-  let id = parseInt(_.get(req, ['query', 'id'], 0))
+let deleteProject = RouterConfigBuilder.routerConfigBuilder('/api/project/item/delete', RouterConfigBuilder.METHOD_TYPE_POST, async (req, res) => {
+  let id = parseInt(_.get(req, ['body', 'id'], 0))
   let updateUcid = parseInt(_.get(req, ['fee', 'user', 'ucid'], '0'))
   if (_.isInteger(id) === false) {
     res.send(API_RES.showError('参数错误'))
@@ -116,8 +119,9 @@ let deleteProject = RouterConfigBuilder.routerConfigBuilder('/api/project/item/d
 
   // 检查权限
   let isAdmin = await MUser.isAdmin(updateUcid)
-  if (isAdmin === false) {
-    return res.send(API_RES.noPrivilege('只有管理员才可以删除项目'))
+  let isOwner = await MProjetMember.isProjectOwner(id, updateUcid)
+  if (isOwner === false && isAdmin === false) {
+    return res.send(API_RES.noPrivilege('只有管理员和项目Owner才可以删除该项目！'))
   }
 
   let updateData = {
@@ -135,25 +139,31 @@ let deleteProject = RouterConfigBuilder.routerConfigBuilder('/api/project/item/d
 let update = RouterConfigBuilder.routerConfigBuilder('/api/project/item/update', RouterConfigBuilder.METHOD_TYPE_POST, async (req, res) => {
   let body = _.get(req, ['body'], {})
   let id = _.get(body, ['id'], 0)
-
   let updateUcid = _.get(req, ['fee', 'user', 'ucid'], '0')
-
-  let updateRecord = {}
-  for (let itemKey of [
-    'displayName',
-    'projectName',
-    'cDesc'
-  ]) {
-    if (_.has(body, itemKey)) {
-      updateRecord[itemKey] = _.get(body, [itemKey], '')
-    }
+  let updateRecord = {
+    display_name: _.get(body, ['pname'], undefined),
+    c_desc: _.get(body, ['desc'], undefined),
+    project_name: _.get(body, ['pid'], undefined),
+    home_page: _.get(body, ['homePage'], undefined),
+    mail: _.get(body, ['mail'], undefined)
   }
-
+  updateRecord = _.forOwn(updateRecord, (value, key, object) => {
+    if (value === undefined) {
+      delete object[key]
+    }
+    return object
+  })
   // 检查权限
-  if (_.has(updateRecord, ['projectName'])) {
-    let isAdmin = await MUser.isAdmin(updateUcid)
-    if (isAdmin === false) {
-      return res.send(API_RES.noPrivilege('只有管理员才可以修改projectName字段'))
+  let isOwner = await MProjetMember.isProjectOwner(id, updateUcid)
+  let isAdmin = await MUser.isAdmin(updateUcid)
+  if (_.has(updateRecord, ['project_name'])) {
+    if (isOwner === false && isAdmin === false) {
+      return res.send(API_RES.noPrivilege('只有管理员和项目Owner才可以修改项目ID'))
+    }
+    // 校验是否已经存在相同的project_name
+    let hasExist = await MProject.getProjectByProjectName(updateRecord.project_name)
+    if (hasExist) {
+      return res.send(API_RES.showError('项目pid已经存在了'))
     }
   }
 

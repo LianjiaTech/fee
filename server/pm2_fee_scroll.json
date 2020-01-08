@@ -1,0 +1,95 @@
+{
+  "apps": [
+    {
+      "name": "fee-scroll-error",
+      "script": "./dist/fee.js",
+      "cwd": "./",
+      "args": "Scroll:ScrollData error 2019-08-01",
+      "watch": [
+        "dist"
+      ],
+      "ignore_watch": [
+        "node_modules",
+        "log",
+        "painting"
+      ],
+      "watch_options": {
+        "followSymlinks": true
+      },
+      "error_file": "./log/pm2/command/Scroll-error-err.log",
+      "out_file": "./log/pm2/command/Scroll-error-out.log",
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "env_production": {
+        "NODE_ENV": "production"
+      },
+      "env_testing": {
+        "NODE_ENV": "testing"
+      },
+      "env_backup": {
+        "NODE_ENV": "backup"
+      }
+    }, {
+      "name": "fee-scroll-perf",
+      "script": "./dist/fee.js",
+      "cwd": "./",
+      "args": "Scroll:ScrollData perf '2019-08-01'",
+      "watch": [
+        "dist"
+      ],
+      "ignore_watch": [
+        "node_modules",
+        "log",
+        "painting"
+      ],
+      "watch_options": {
+        "followSymlinks": true
+      },
+      "error_file": "./log/pm2/command/Scroll-perf-err.log",
+      "out_file": "./log/pm2/command/Scroll-perf-out.log",
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "env_production": {
+        "NODE_ENV": "production"
+      },
+      "env_testing": {
+        "NODE_ENV": "testing"
+      },
+      "env_backup": {
+        "NODE_ENV": "backup"
+      }
+    }, {
+      "name": "fee-scroll-product",
+      "script": "./dist/fee.js",
+      "cwd": "./",
+      "args": "Scroll:ScrollData product '2019-08-01'",
+      "watch": [
+        "dist"
+      ],
+      "ignore_watch": [
+        "node_modules",
+        "log",
+        "painting"
+      ],
+      "watch_options": {
+        "followSymlinks": true
+      },
+      "error_file": "./log/pm2/command/Scroll-product-err.log",
+      "out_file": "./log/pm2/command/Scroll-product-out.log",
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "env_production": {
+        "NODE_ENV": "production"
+      },
+      "env_testing": {
+        "NODE_ENV": "testing"
+      },
+      "env_backup": {
+        "NODE_ENV": "backup"
+      }
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "name": "fee-watch",
+  "script": "./dist/watch.js",
+  "cwd": "./",
+  "watch": [
+    "dist"
+  ],
+  "ignore_watch": [
+    "node_modules",
+    "log",
+    "painting"
+  ],
+  "watch_options": {
+    "followSymlinks": true
+  },
+  "error_file": "./log/pm2/app/watch-err.log",
+  "out_file": "./log/pm2/app/watch-out.log",
+  "log_date_format": "YYYY-MM-DD HH:mm",
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "env_production": {
+    "NODE_ENV": "production"
+  },
+  "env_testing": {
+    "NODE_ENV": "testing"
+  },
+  "env_backup": {
+    "NODE_ENV": "backup"
+  }
+}

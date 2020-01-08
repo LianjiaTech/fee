@@ -8,6 +8,7 @@ import Logger from '~/src/library/logger'
 import MCityDistribution from '~/src/model/parse/city_distribution'
 
 const BASE_TABLE_NAME = 't_r_performance'
+const URL_QUERY_LIMIT = 100
 
 const INDICATOR_TYPE_DNS查询耗时 = 'dns_lookup_ms'
 const INDICATOR_TYPE_TCP链接耗时 = 'tcp_connect_ms'
@@ -79,15 +80,18 @@ async function get (projectId, url, indicator, countAt, countType = DATE_FORMAT.
   let dateFormat = DATE_FORMAT.DATABASE_BY_UNIT[countType]
 
   let countAtTime = moment.unix(countAt).format(dateFormat)
+  let whereParams = {
+    indicator,
+    count_at_time: countAtTime,
+    count_type: countType
+  }
+  if (url) {
+    whereParams.url = url
+  }
   let rawRecord = await Knex
     .select(TABLE_COLUMN)
     .from(tableName)
-    .where({
-      url: url,
-      indicator: indicator,
-      count_at_time: countAtTime,
-      count_type: countType
-    })
+    .where(whereParams)
     .catch((e) => {
       Logger.warn('查询失败, 错误原因 =>', e)
       return []
@@ -170,6 +174,8 @@ async function getDistinctUrlListInRange (projectId, indicatorList, startAt, end
       })
       .whereIn('indicator', indicatorList)
       .whereIn('count_at_time', countAtTimeList)
+      .orderBy('id', 'desc')
+      .limit(URL_QUERY_LIMIT)
       .catch((e) => {
         Logger.warn('查询失败, 错误原因 =>', e)
         return []
@@ -410,6 +416,25 @@ async function replaceInto (projectId, url, indicator, countAt, countType = DATE
   return isSuccess
 }
 
+/**
+ * 获取时间范围内指定url和indicator的indicator_value及pv的总和
+ */
+async function getIndicatorPVSumValue (projectId, startAt, endAt, indicator, url, countType = DATE_FORMAT.UNIT.MINUTE) {
+  let tableName = getTableName(projectId, endAt)
+  let countAtTimeList = DatabaseUtil.getDatabaseTimeList(startAt, endAt, countType)
+  let result = await Knex
+    .sum('sum_indicator_value as sumIndicator')
+    .sum('pv as sumPv')
+    .from(tableName)
+    .where('indicator', indicator)
+    .andWhere('url', url)
+    .whereIn('count_at_time', countAtTimeList)
+    .catch(err => {
+      Logger.error('performance.js => getIndicatorPVSumValue', err)
+      return [{ sumIndicator: null, sumPv: null }]
+    })
+  return result[0]
+}
 export default {
   getTableName,
 
@@ -418,7 +443,7 @@ export default {
   replaceInto,
   getCityDistributeInRange,
   getDistinctUrlListInRange,
-
+  getIndicatorPVSumValue,
   getUrlOverviewInSameMonth,
   getIndicatorLineChartDataInSameMonth,
 

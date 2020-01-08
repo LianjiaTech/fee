@@ -20,7 +20,9 @@ const ACTION_TYPE_ALERT = 'alert' // 此处没有专门的Error类型, 因为如
 const ACTION_TYPE_REDIRECT = 'redirect'
 const ACTION_TYPE_LOGIN = 'login'
 const ACTION_TYPE_FORBIDDEN = 'forbitan'
-
+const ACTION_TYPE_BADREQUEST = 'badRequest'
+const ACTION_TYPE_NOTFound = 'notfound'
+const ACTION_TYPE_SERVERERROR = 'serverError'
 /**
  * 返回响应值
  * @param {Object} data
@@ -29,13 +31,14 @@ const ACTION_TYPE_FORBIDDEN = 'forbitan'
  * @param {String} action
  * @param {String} url
  */
-function showResult (data, msg = '', code = 0, action = ACTION_TYPE_SUCCESS, url = '') {
+function showResult (
+  data, msg = '', code = 0, action = ACTION_TYPE_SUCCESS, url = '') {
   return {
     code,
     action,
     data,
     msg,
-    url
+    url,
   }
 }
 
@@ -46,7 +49,8 @@ function showResult (data, msg = '', code = 0, action = ACTION_TYPE_SUCCESS, url
  * @param {*} data
  * @param {*} action
  */
-function showError (errorMsg = '', errorCode = 10000, data = {}, action = ACTION_TYPE_ALERT) {
+function showError (
+  errorMsg = '', errorCode = 10000, data = {}, action = ACTION_TYPE_ALERT) {
   let url = ''
   return showResult(data, errorMsg, errorCode, action, url)
 }
@@ -71,6 +75,19 @@ function noPrivilege (msg = '没有权限') {
   return showResult({}, msg, 10000, ACTION_TYPE_FORBIDDEN, '')
 }
 
+function badRequest (msg) {
+  return showResult({}, msg, 400, ACTION_TYPE_BADREQUEST, '')
+}
+
+
+function badNotFound (msg) {
+  return showResult({}, msg, 404, ACTION_TYPE_NOTFound, '')
+}
+
+function serverError (msg, error) {
+  return showResult({error}, msg, 500, ACTION_TYPE_SERVERERROR, '')
+}
+
 export default {
   // 标准接口
   noPrivilege,
@@ -78,11 +95,13 @@ export default {
   showError,
   showResult,
   redirectTo,
-
+  badRequest,
+  badNotFound,
+  serverError,
   // Action类型
   ACTION_TYPE_SUCCESS,
   ACTION_TYPE_ALERT,
   ACTION_TYPE_REDIRECT,
   ACTION_TYPE_LOGIN,
-  ACTION_TYPE_FORBIDDEN
+  ACTION_TYPE_FORBIDDEN,
 }
