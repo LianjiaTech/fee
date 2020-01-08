@@ -1,29 +1,17 @@
-"use strict";
-
-var _Object$defineProperty = require("@babel/runtime-corejs2/core-js/object/define-property");
-
-_Object$defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.setting = setting;
-exports.default = void 0;
-
-var _util = require("./util");
-
+import _mapInstanceProperty from "@babel/runtime-corejs3/core-js/instance/map";
+import { arrayFrom, isFunction, merge } from './util';
 var tryJS = {};
 tryJS.wrap = wrap;
 tryJS.wrapArgs = tryifyArgs;
 var config = {
   handleTryCatchError: function handleTryCatchError() {}
 };
-
-function setting(opts) {
-  (0, _util.merge)(opts, config);
+export function setting(opts) {
+  merge(opts, config);
 }
 
 function wrap(func) {
-  return (0, _util.isFunction)(func) ? tryify(func) : func;
+  return isFunction(func) ? tryify(func) : func;
 }
 /**
  * 将函数使用 try..catch 包装
@@ -59,12 +47,14 @@ function tryify(func) {
 
 function tryifyArgs(func) {
   return function () {
-    var args = (0, _util.arrayFrom)(arguments).map(function (arg) {
+    var _context;
+
+    var args = _mapInstanceProperty(_context = arrayFrom(arguments)).call(_context, function (arg) {
       return wrap(arg);
     });
+
     return func.apply(this, args);
   };
 }
 
-var _default = tryJS;
-exports.default = _default;
+export default tryJS;

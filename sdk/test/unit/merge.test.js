@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+ 
 import dt from '../../lib/index'
 
 describe('dt instance init:', () => {
@@ -34,11 +38,19 @@ describe('dt instance init:', () => {
       },
       version: '1.0.0',
       getPageType: (location = window.location) => {
-        return `${location.host}${location.pathname}_test`;
+        return `${location.host}${location.pathname}`;
       }
      }
     dt.set(conf, true)
     const config = dt.config
+
     expect(config).toStrictEqual({ ...conf, test: testTag });
+    expect(config.record.js_error_report_config.checkErrorNeedReport('desc, stack')).toBeTruthy()
+    expect(config.getPageType({
+      host: 'xxx.test.com',
+      pathname: '/home'
+    })).toBe('xxx.test.com/home')
   })
 })
+
+

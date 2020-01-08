@@ -1,62 +1,32 @@
-"use strict";
+import _Object$defineProperty from "@babel/runtime-corejs3/core-js/object/define-property";
+import _Object$defineProperties from "@babel/runtime-corejs3/core-js/object/define-properties";
+import _Object$getOwnPropertyDescriptors from "@babel/runtime-corejs3/core-js/object/get-own-property-descriptors";
+import _Object$getOwnPropertyDescriptor from "@babel/runtime-corejs3/core-js/object/get-own-property-descriptor";
+import _Object$getOwnPropertySymbols from "@babel/runtime-corejs3/core-js/object/get-own-property-symbols";
+import _concatInstanceProperty from "@babel/runtime-corejs3/core-js/instance/concat";
+import _indexOfInstanceProperty from "@babel/runtime-corejs3/core-js/instance/index-of";
+import _forEachInstanceProperty from "@babel/runtime-corejs3/core-js/instance/for-each";
+import _toConsumableArray from "@babel/runtime-corejs3/helpers/esm/toConsumableArray";
+import _sliceInstanceProperty from "@babel/runtime-corejs3/core-js/instance/slice";
+import _Object$assign from "@babel/runtime-corejs3/core-js/object/assign";
+import _Array$isArray from "@babel/runtime-corejs3/core-js/array/is-array";
+import _reduceInstanceProperty from "@babel/runtime-corejs3/core-js/instance/reduce";
+import _defineProperty from "@babel/runtime-corejs3/helpers/esm/defineProperty";
+import _Object$keys from "@babel/runtime-corejs3/core-js/object/keys";
+import _filterInstanceProperty from "@babel/runtime-corejs3/core-js/instance/filter";
+import _typeof from "@babel/runtime-corejs3/helpers/esm/typeof";
 
-var _interopRequireDefault = require("@babel/runtime-corejs2/helpers/interopRequireDefault");
+function ownKeys(object, enumerableOnly) { var keys = _Object$keys(object); if (_Object$getOwnPropertySymbols) { var symbols = _Object$getOwnPropertySymbols(object); if (enumerableOnly) symbols = _filterInstanceProperty(symbols).call(symbols, function (sym) { return _Object$getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-var _Object$defineProperty2 = require("@babel/runtime-corejs2/core-js/object/define-property");
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { var _context3; _forEachInstanceProperty(_context3 = ownKeys(Object(source), true)).call(_context3, function (key) { _defineProperty(target, key, source[key]); }); } else if (_Object$getOwnPropertyDescriptors) { _Object$defineProperties(target, _Object$getOwnPropertyDescriptors(source)); } else { var _context4; _forEachInstanceProperty(_context4 = ownKeys(Object(source))).call(_context4, function (key) { _Object$defineProperty(target, key, _Object$getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-_Object$defineProperty2(exports, "__esModule", {
-  value: true
-});
-
-exports.isObject = isObject;
-exports.hash = hash;
-exports.getUUID = getUUID;
-exports.parseDomain = parseDomain;
-exports.getDeviceId = getDeviceId;
-exports.customerErrorCheck = customerErrorCheck;
-exports.detailAdapter = exports.validLog = exports.clog = exports.noop = exports.isDom = exports._ = exports.isFunction = exports.merge = exports.has = exports.get = void 0;
-
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime-corejs2/core-js/object/define-property"));
-
-var _defineProperties = _interopRequireDefault(require("@babel/runtime-corejs2/core-js/object/define-properties"));
-
-var _getOwnPropertyDescriptors = _interopRequireDefault(require("@babel/runtime-corejs2/core-js/object/get-own-property-descriptors"));
-
-var _getOwnPropertyDescriptor = _interopRequireDefault(require("@babel/runtime-corejs2/core-js/object/get-own-property-descriptor"));
-
-var _getOwnPropertySymbols = _interopRequireDefault(require("@babel/runtime-corejs2/core-js/object/get-own-property-symbols"));
-
-var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime-corejs2/helpers/toConsumableArray"));
-
-require("core-js/modules/es6.regexp.match");
-
-require("core-js/modules/es6.regexp.constructor");
-
-var _assign = _interopRequireDefault(require("@babel/runtime-corejs2/core-js/object/assign"));
-
-var _isArray = _interopRequireDefault(require("@babel/runtime-corejs2/core-js/array/is-array"));
-
-var _defineProperty3 = _interopRequireDefault(require("@babel/runtime-corejs2/helpers/defineProperty"));
-
-var _keys = _interopRequireDefault(require("@babel/runtime-corejs2/core-js/object/keys"));
-
-require("core-js/modules/es6.regexp.split");
-
-var _typeof2 = _interopRequireDefault(require("@babel/runtime-corejs2/helpers/typeof"));
-
-require("core-js/modules/es6.regexp.to-string");
-
-require("core-js/modules/es6.object.to-string");
-
-var _rule = _interopRequireDefault(require("./rule"));
-
-var _jsCookie = _interopRequireDefault(require("js-cookie"));
-
-var _constant = require("./constant");
-
-function ownKeys(object, enumerableOnly) { var keys = (0, _keys.default)(object); if (_getOwnPropertySymbols.default) { var symbols = (0, _getOwnPropertySymbols.default)(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return (0, _getOwnPropertyDescriptor.default)(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0, _defineProperty3.default)(target, key, source[key]); }); } else if (_getOwnPropertyDescriptors.default) { (0, _defineProperties.default)(target, (0, _getOwnPropertyDescriptors.default)(source)); } else { ownKeys(Object(source)).forEach(function (key) { (0, _defineProperty2.default)(target, key, (0, _getOwnPropertyDescriptor.default)(source, key)); }); } } return target; }
+import rule from './rule';
+import Cookies from 'js-cookie';
+import { DEFAULT_CONFIG, COOKIE_NAME_DIVICE_ID } from './constant';
+/**
+ * 不依赖于lodash，webpack配置按需加载lodash会导致sdk中所有lodash方法运行异常
+ * @created at 2019-07-08
+ */
 
 var toString = Object.prototype.toString;
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -82,8 +52,9 @@ function getTag(value) {
  */
 
 
-function isObject(value) {
-  var type = (0, _typeof2.default)(value);
+export function isObject(value) {
+  var type = _typeof(value);
+
   return value != null && (type == 'object' || type == 'function');
 }
 /**
@@ -111,9 +82,10 @@ function isObject(value) {
  *  get(obj, 'clothes.0.test', 'no test'); // 'no test'
  */
 
+export var get = function get(object, path, defaultValue) {
+  var _context;
 
-var get = function get(object, path, defaultValue) {
-  var _path = getTag(path) === '[object Array]' ? path : String.prototype.split.call(path, /[,[\].]+?/).filter(Boolean);
+  var _path = getTag(path) === '[object Array]' ? path : _filterInstanceProperty(_context = String.prototype.split.call(path, /[,[\].]+?/)).call(_context, Boolean);
 
   var index = 0;
   var length = _path.length;
@@ -135,10 +107,7 @@ var get = function get(object, path, defaultValue) {
  * @returns {boolean} 如果存在，那么返回 true ，否则返回 false
  */
 
-
-exports.get = get;
-
-var has = function has(object, key) {
+export var has = function has(object, key) {
   return object != null && hasOwnProperty.call(object, key);
 };
 /**
@@ -148,10 +117,7 @@ var has = function has(object, key) {
  * @returns {Object} 一个merge后的新对象
  */
 
-
-exports.has = has;
-
-var merge = function merge(source, other) {
+export var merge = function merge(source, other) {
   if (!isObject(source) || !isObject(other)) {
     return other === undefined ? source : other;
   }
@@ -161,12 +127,13 @@ var merge = function merge(source, other) {
   } // 合并两个对象的 key，另外要区分数组的初始值为 []
 
 
-  var keys = (0, _keys.default)(_objectSpread({}, source, {}, other));
-  return keys.reduce(function (acc, key) {
+  var keys = _Object$keys(_objectSpread({}, source, {}, other));
+
+  return _reduceInstanceProperty(keys).call(keys, function (acc, key) {
     // 递归合并 value
     acc[key] = merge(source[key], other[key]);
     return acc;
-  }, (0, _isArray.default)(source) ? [] : {});
+  }, _Array$isArray(source) ? [] : {});
 };
 /**
  * 判断给定的value是不是一个function类型
@@ -174,44 +141,29 @@ var merge = function merge(source, other) {
  * @returns {Boolean} 如果是返回 true，否则返回 false
  */
 
-
-exports.merge = merge;
-
-var isFunction = function isFunction(value) {
+export var isFunction = function isFunction(value) {
   if (!isObject(value)) return false;
   var tag = getTag(value);
   return tag == '[object Function]' || tag == '[object AsyncFunction]' || tag == '[object GeneratorFunction]' || tag == '[object Proxy]';
 }; // 将loadsh的方法集中到_中
 
-
-exports.isFunction = isFunction;
-
-var _ = (0, _assign.default)({}, {
+export var _ = _Object$assign({}, {
   get: get,
   has: has,
   isFunction: isFunction,
   merge: merge
 });
-
-exports._ = _;
-
-var isDom = function isDom(target) {
-  return typeof HTMLElement === 'function' ? target instanceof HTMLElement : target && (0, _typeof2.default)(target) === 'object' && target.nodeType === 1 && typeof target.nodeName === 'string';
+export var isDom = function isDom(target) {
+  return typeof HTMLElement === 'function' ? target instanceof HTMLElement : target && _typeof(target) === 'object' && target.nodeType === 1 && typeof target.nodeName === 'string';
 };
-
-exports.isDom = isDom;
-
-var noop = function noop() {};
+export var noop = function noop() {};
 /**
  * 生成字符串的hash
  * via https://stackoverflow.com/a/7616484/4197333
  * @param {*} content
  */
 
-
-exports.noop = noop;
-
-function hash(content) {
+export function hash(content) {
   content = content + '';
   var hash = 0;
   var index = 0;
@@ -230,8 +182,7 @@ function hash(content) {
 
   return hash.toString(36);
 }
-
-function getUUID() {
+export function getUUID() {
   var timestampMs = new Date() * 1;
 
   function s4() {
@@ -240,11 +191,10 @@ function getUUID() {
 
   return hash(timestampMs + '') + '-' + hash(navigator.userAgent) + '-' + s4() + s4() + s4() + s4() + s4() + '-' + s4() + s4() + s4();
 }
-
-function parseDomain(hostname) {
+export function parseDomain(hostname) {
   // 首先用比较严肃的方法:
   // 先尝试匹配常见后缀
-  var checkReg = new RegExp(/(.*?)\.?([^\.]*?)\.(gl|com|net|org|biz|ws|in|me|co\.uk|co|org\.uk|ltd\.uk|plc\.uk|me\.uk|edu|mil|br\.com|cn\.com|eu\.com|hu\.com|no\.com|qc\.com|sa\.com|se\.com|se\.net|us\.com|uy\.com|ac|co\.ac|gv\.ac|or\.ac|ac\.ac|af|am|as|at|ac\.at|co\.at|gv\.at|or\.at|asn\.au|com\.au|edu\.au|org\.au|net\.au|id\.au|be|ac\.be|adm\.br|adv\.br|am\.br|arq\.br|art\.br|bio\.br|cng\.br|cnt\.br|com\.br|ecn\.br|eng\.br|esp\.br|etc\.br|eti\.br|fm\.br|fot\.br|fst\.br|g12\.br|gov\.br|ind\.br|inf\.br|jor\.br|lel\.br|med\.br|mil\.br|net\.br|nom\.br|ntr\.br|odo\.br|org\.br|ppg\.br|pro\.br|psc\.br|psi\.br|rec\.br|slg\.br|tmp\.br|tur\.br|tv\.br|vet\.br|zlg\.br|br|ab\.ca|bc\.ca|mb\.ca|nb\.ca|nf\.ca|ns\.ca|nt\.ca|on\.ca|pe\.ca|qc\.ca|sk\.ca|yk\.ca|ca|cc|ac\.cn|com\.cn|edu\.cn|gov\.cn|org\.cn|bj\.cn|sh\.cn|tj\.cn|cq\.cn|he\.cn|nm\.cn|ln\.cn|jl\.cn|hl\.cn|js\.cn|zj\.cn|ah\.cn|gd\.cn|gx\.cn|hi\.cn|sc\.cn|gz\.cn|yn\.cn|xz\.cn|sn\.cn|gs\.cn|qh\.cn|nx\.cn|xj\.cn|tw\.cn|hk\.cn|mo\.cn|cn|cx|cz|de|dk|fo|com\.ec|tm\.fr|com\.fr|asso\.fr|presse\.fr|fr|gf|gs|co\.il|net\.il|ac\.il|k12\.il|gov\.il|muni\.il|ac\.in|co\.in|org\.in|ernet\.in|gov\.in|net\.in|res\.in|is|it|ac\.jp|co\.jp|go\.jp|or\.jp|ne\.jp|ac\.kr|co\.kr|go\.kr|ne\.kr|nm\.kr|or\.kr|li|lt|lu|asso\.mc|tm\.mc|com\.mm|org\.mm|net\.mm|edu\.mm|gov\.mm|ms|nl|no|nu|pl|ro|org\.ro|store\.ro|tm\.ro|firm\.ro|www\.ro|arts\.ro|rec\.ro|info\.ro|nom\.ro|nt\.ro|se|si|com\.sg|org\.sg|net\.sg|gov\.sg|sk|st|tf|ac\.th|co\.th|go\.th|mi\.th|net\.th|or\.th|tm|to|com\.tr|edu\.tr|gov\.tr|k12\.tr|net\.tr|org\.tr|com\.tw|org\.tw|net\.tw|ac\.uk|uk\.com|uk\.net|gb\.com|gb\.net|vg|sh|kz|ch|info|ua|gov|name|pro|ie|hk|com\.hk|org\.hk|net\.hk|edu\.hk|us|tk|cd|by|ad|lv|eu\.lv|bz|es|jp|cl|ag|mobi|eu|co\.nz|org\.nz|net\.nz|maori\.nz|iwi\.nz|io|la|md|sc|sg|vc|tw|travel|my|se|tv|pt|com\.pt|edu\.pt|asia|fi|com\.ve|net\.ve|fi|org\.ve|web\.ve|info\.ve|co\.ve|tel|im|gr|ru|net\.ru|org\.ru|hr|com\.hr|ly|xyz)$/);
+  var checkReg = new RegExp(/(.*?)\.?([^.]*?)\.(gl|com|net|org|biz|ws|in|me|co\.uk|co|org\.uk|ltd\.uk|plc\.uk|me\.uk|edu|mil|br\.com|cn\.com|eu\.com|hu\.com|no\.com|qc\.com|sa\.com|se\.com|se\.net|us\.com|uy\.com|ac|co\.ac|gv\.ac|or\.ac|ac\.ac|af|am|as|at|ac\.at|co\.at|gv\.at|or\.at|asn\.au|com\.au|edu\.au|org\.au|net\.au|id\.au|be|ac\.be|adm\.br|adv\.br|am\.br|arq\.br|art\.br|bio\.br|cng\.br|cnt\.br|com\.br|ecn\.br|eng\.br|esp\.br|etc\.br|eti\.br|fm\.br|fot\.br|fst\.br|g12\.br|gov\.br|ind\.br|inf\.br|jor\.br|lel\.br|med\.br|mil\.br|net\.br|nom\.br|ntr\.br|odo\.br|org\.br|ppg\.br|pro\.br|psc\.br|psi\.br|rec\.br|slg\.br|tmp\.br|tur\.br|tv\.br|vet\.br|zlg\.br|br|ab\.ca|bc\.ca|mb\.ca|nb\.ca|nf\.ca|ns\.ca|nt\.ca|on\.ca|pe\.ca|qc\.ca|sk\.ca|yk\.ca|ca|cc|ac\.cn|com\.cn|edu\.cn|gov\.cn|org\.cn|bj\.cn|sh\.cn|tj\.cn|cq\.cn|he\.cn|nm\.cn|ln\.cn|jl\.cn|hl\.cn|js\.cn|zj\.cn|ah\.cn|gd\.cn|gx\.cn|hi\.cn|sc\.cn|gz\.cn|yn\.cn|xz\.cn|sn\.cn|gs\.cn|qh\.cn|nx\.cn|xj\.cn|tw\.cn|hk\.cn|mo\.cn|cn|cx|cz|de|dk|fo|com\.ec|tm\.fr|com\.fr|asso\.fr|presse\.fr|fr|gf|gs|co\.il|net\.il|ac\.il|k12\.il|gov\.il|muni\.il|ac\.in|co\.in|org\.in|ernet\.in|gov\.in|net\.in|res\.in|is|it|ac\.jp|co\.jp|go\.jp|or\.jp|ne\.jp|ac\.kr|co\.kr|go\.kr|ne\.kr|nm\.kr|or\.kr|li|lt|lu|asso\.mc|tm\.mc|com\.mm|org\.mm|net\.mm|edu\.mm|gov\.mm|ms|nl|no|nu|pl|ro|org\.ro|store\.ro|tm\.ro|firm\.ro|www\.ro|arts\.ro|rec\.ro|info\.ro|nom\.ro|nt\.ro|se|si|com\.sg|org\.sg|net\.sg|gov\.sg|sk|st|tf|ac\.th|co\.th|go\.th|mi\.th|net\.th|or\.th|tm|to|com\.tr|edu\.tr|gov\.tr|k12\.tr|net\.tr|org\.tr|com\.tw|org\.tw|net\.tw|ac\.uk|uk\.com|uk\.net|gb\.com|gb\.net|vg|sh|kz|ch|info|ua|gov|name|pro|ie|hk|com\.hk|org\.hk|net\.hk|edu\.hk|us|tk|cd|by|ad|lv|eu\.lv|bz|es|jp|cl|ag|mobi|eu|co\.nz|org\.nz|net\.nz|maori\.nz|iwi\.nz|io|la|md|sc|sg|vc|tw|travel|my|se|tv|pt|com\.pt|edu\.pt|asia|fi|com\.ve|net\.ve|fi|org\.ve|web\.ve|info\.ve|co\.ve|tel|im|gr|ru|net\.ru|org\.ru|hr|com\.hr|ly|xyz)$/);
   var parseResult = hostname.match(checkReg);
   var domain;
 
@@ -255,41 +205,38 @@ function parseDomain(hostname) {
   if (domain === undefined) {
     // 没有匹配到常见后缀, 则使用最后两段被.分隔的字符, 作为主域名
     var urlSplitList = hostname.split('.');
-    domain = urlSplitList.slice(urlSplitList.length - 2, urlSplitList.length).join('.');
+    domain = _sliceInstanceProperty(urlSplitList).call(urlSplitList, urlSplitList.length - 2, urlSplitList.length).join('.');
   } // 强制转为字符串
 
 
   domain = domain + '';
   return domain;
 }
-
-function getDeviceId() {
+export function getDeviceId() {
   // 尝试在cookie中获取
-  var deviceId = _jsCookie.default.get(_constant.COOKIE_NAME_DIVICE_ID);
+  var deviceId = Cookies.get(COOKIE_NAME_DIVICE_ID);
 
   if (deviceId === undefined) {
     // cookie中也没有, 手工设置上
     deviceId = getUUID();
     var hostname = location.hostname;
-    var domain = parseDomain(hostname); // cookie需要种在主域名上, 否则像bj.ke.com/sh.ke.com下的设备数就炸了
+    var domain = parseDomain(hostname); // cookie需要种在主域名上
 
-    _jsCookie.default.set(_constant.COOKIE_NAME_DIVICE_ID, deviceId, {
+    Cookies.set(COOKIE_NAME_DIVICE_ID, deviceId, {
       expires: 1000,
       domain: domain
     }); // Cookie有可能种失败, 如果接种失败, 则还是返回空字符串
 
-
-    deviceId = _jsCookie.default.get(_constant.COOKIE_NAME_DIVICE_ID) || '';
+    deviceId = Cookies.get(COOKIE_NAME_DIVICE_ID) || '';
   }
 
   return deviceId;
 }
-
-function customerErrorCheck(commonConfig, desc, stack) {
+export function customerErrorCheck(commonConfig, desc, stack) {
   var debugLogger = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : console.log;
 
   // 调用自定义函数, 检测是否需要上报错误
-  var customerErrorCheckFunc = _.get(commonConfig, ['record', 'js_error_report_config', 'checkErrorNeedReport'], _.get(_constant.DEFAULT_CONFIG, ['record', 'js_error_report_config', 'checkErrorNeedReport']));
+  var customerErrorCheckFunc = _.get(commonConfig, ['record', 'js_error_report_config', 'checkErrorNeedReport'], _.get(DEFAULT_CONFIG, ['record', 'js_error_report_config', 'checkErrorNeedReport']));
 
   var isNeedReport = false;
 
@@ -307,14 +254,10 @@ function customerErrorCheck(commonConfig, desc, stack) {
 
   return !!isNeedReport;
 }
-
-var clog = function clog(text) {
+export var clog = function clog(text) {
   console.log("%c ".concat(text), 'color:red');
 };
-
-exports.clog = clog;
-
-var validLog = function validLog(commonConfig) {
+export var validLog = function validLog(commonConfig) {
   var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
   var code = arguments.length > 2 ? arguments[2] : undefined;
   var detail = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
@@ -341,41 +284,43 @@ var validLog = function validLog(commonConfig) {
   } // 字端段类型校验
 
 
-  if ((0, _typeof2.default)(detail) !== 'object') {
+  if (_typeof(detail) !== 'object') {
     return 'second argument detail required object';
   } // 字端段类型校验
 
 
-  if ((0, _typeof2.default)(extra) !== 'object') {
+  if (_typeof(extra) !== 'object') {
     return 'third argument extra required object';
   } // 字段校验
 
 
-  var ruleItem = _rule.default[code];
+  var ruleItem = rule[code];
 
   if (ruleItem) {
     // 消费字段必填
-    var requireFields = (0, _toConsumableArray2.default)(ruleItem.df);
-    var realFields = (0, _keys.default)(detail);
+    var requireFields = _toConsumableArray(ruleItem.df);
+
+    var realFields = _Object$keys(detail);
+
     var needFields = [];
-    requireFields.forEach(function (field) {
+
+    _forEachInstanceProperty(requireFields).call(requireFields, function (field) {
       // 缺字端
-      if (realFields.indexOf(field) === -1) {
+      if (_indexOfInstanceProperty(realFields).call(realFields, field) === -1) {
         needFields.push(field);
       }
     });
 
     if (needFields.length) {
-      return "code: ".concat(code, " \u8981\u6C42 ").concat(needFields.join(','), "\u5B57\u6BB5\u5FC5\u586B");
+      var _context2;
+
+      return _concatInstanceProperty(_context2 = "code: ".concat(code, " \u8981\u6C42 ")).call(_context2, needFields.join(','), "\u5B57\u6BB5\u5FC5\u586B");
     }
   }
 
   return '';
 };
-
-exports.validLog = validLog;
-
-var detailAdapter = function detailAdapter(code) {
+export var detailAdapter = function detailAdapter(code) {
   var detail = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var dbDetail = {
     error_no: '',
@@ -386,13 +331,14 @@ var detailAdapter = function detailAdapter(code) {
     response_size_b: ''
   }; // 查找rule
 
-  var ruleItem = _rule.default[code];
+  var ruleItem = rule[code];
 
   if (ruleItem) {
     var d = _objectSpread({}, dbDetail);
 
-    var fields = (0, _keys.default)(detail);
-    fields.forEach(function (field) {
+    var fields = _Object$keys(detail);
+
+    _forEachInstanceProperty(fields).call(fields, function (field) {
       var transferField = ruleItem.dft[field]; // 需要字段转换
 
       if (transferField) {
@@ -403,10 +349,9 @@ var detailAdapter = function detailAdapter(code) {
         d[field] = detail[field];
       }
     });
+
     return d;
   } else {
     return detail;
   }
 };
-
-exports.detailAdapter = detailAdapter;

@@ -1,19 +1,5 @@
-"use strict";
-
-var _Object$defineProperty = require("@babel/runtime-corejs2/core-js/object/define-property");
-
-_Object$defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.debounce = debounce;
-exports.merge = merge;
-exports.isFunction = isFunction;
-exports.arrayFrom = arrayFrom;
-
-require("core-js/modules/es6.regexp.to-string");
-
-require("core-js/modules/es6.object.to-string");
+import _sliceInstanceProperty from "@babel/runtime-corejs3/core-js/instance/slice";
+import _setTimeout from "@babel/runtime-corejs3/core-js/set-timeout";
 
 /**
  * debounce
@@ -24,13 +10,13 @@ require("core-js/modules/es6.object.to-string");
  *
  * @return {Function}
  */
-function debounce(func, delay, callback) {
+export function debounce(func, delay, callback) {
   var timer;
   return function () {
     var context = this;
     var args = arguments;
     clearTimeout(timer);
-    timer = setTimeout(function () {
+    timer = _setTimeout(function () {
       func.apply(context, args);
       !callback || callback();
     }, delay);
@@ -44,8 +30,7 @@ function debounce(func, delay, callback) {
  * @return {Object}
  */
 
-
-function merge(src, dest) {
+export function merge(src, dest) {
   for (var item in src) {
     dest[item] = src[item];
   }
@@ -59,8 +44,7 @@ function merge(src, dest) {
  * @return {Boolean}
  */
 
-
-function isFunction(func) {
+export function isFunction(func) {
   return Object.prototype.toString.call(func) === '[object Function]';
 }
 /**
@@ -70,7 +54,6 @@ function isFunction(func) {
  * @return {Array} 转化后的数组
  */
 
-
-function arrayFrom(arrayLike) {
-  return [].slice.call(arrayLike);
+export function arrayFrom(arrayLike) {
+  return _sliceInstanceProperty([]).call(arrayLike);
 }

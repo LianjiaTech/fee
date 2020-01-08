@@ -1,16 +1,4 @@
-"use strict";
-
-var _interopRequireDefault = require("@babel/runtime-corejs2/helpers/interopRequireDefault");
-
-var _Object$defineProperty2 = require("@babel/runtime-corejs2/core-js/object/define-property");
-
-_Object$defineProperty2(exports, "__esModule", {
-  value: true
-});
-
-exports.default = hookAnyThing;
-
-var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs2/core-js/object/define-property"));
+import _Object$defineProperty from "@babel/runtime-corejs3/core-js/object/define-property";
 
 /**
  * hooks any thing
@@ -18,7 +6,7 @@ var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs2/cor
  * @param hooks :{
  *   key:function 或者是 { set:function  ，get:function }
  */
-function hookAnyThing(ori, hooks) {
+export default function hookAnyThing(ori, hooks) {
   for (var key in ori) {
     var hook = hooks[key];
 
@@ -39,7 +27,6 @@ function hookAnyThing(ori, hooks) {
  * @param ori
  * @param hookFunc
  */
-
 
 function hookFunction(key, ori, hookFunc) {
   this[key] = function () {
@@ -112,7 +99,7 @@ function hookOther(key, ori) {
     };
   }
 
-  (0, _defineProperty.default)(this, key, {
+  _Object$defineProperty(this, key, {
     enumerable: enumerable,
     set: set,
     get: get

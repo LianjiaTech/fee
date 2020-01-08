@@ -1,30 +1,12 @@
-"use strict";
-
-var _interopRequireWildcard = require("@babel/runtime-corejs2/helpers/interopRequireWildcard");
-
-var _interopRequireDefault = require("@babel/runtime-corejs2/helpers/interopRequireDefault");
-
-var _Object$defineProperty = require("@babel/runtime-corejs2/core-js/object/define-property");
-
-_Object$defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.default = void 0;
-
-var _getOwnPropertyNames = _interopRequireDefault(require("@babel/runtime-corejs2/core-js/object/get-own-property-names"));
-
-var _stringify = _interopRequireDefault(require("@babel/runtime-corejs2/core-js/json/stringify"));
-
-var _try = _interopRequireWildcard(require("./try"));
-
-var _util = require("./util");
-
-var _utils = require("../utils");
-
+import _concatInstanceProperty from "@babel/runtime-corejs3/core-js/instance/concat";
+import _Object$getOwnPropertyNames from "@babel/runtime-corejs3/core-js/object/get-own-property-names";
+import _JSON$stringify from "@babel/runtime-corejs3/core-js/json/stringify";
+import tryJS, { setting } from './try';
+import { debounce, merge } from './util';
+import { isObject } from '../utils';
 var monitor = {};
-monitor.tryJS = _try.default;
-(0, _try.setting)({
+monitor.tryJS = tryJS;
+setting({
   handleTryCatchError: handleTryCatchError
 });
 
@@ -68,21 +50,14 @@ var LOAD_ERROR_TYPE = {
 };
 
 function __config(opts) {
-  (0, _util.merge)(opts, config);
-  report = (0, _util.debounce)(config.report, config.delay, function () {
+  merge(opts, config);
+  report = debounce(config.report, config.delay, function () {
     errorList = [];
   });
 }
 
 function __init() {
   // 监听 JavaScript 报错异常(JavaScript runtime error)
-  // window.onerror = function () {
-  //   if (window.ignoreError) {
-  //     window.ignoreError = false
-  //     return
-  //   }
-  //   handleError(formatRuntimerError.apply(null, arguments))
-  // }
   // 监听资源加载错误(JavaScript Scource failed to load)
   window.addEventListener('error', function (event) {
     // 过滤 target 为 window 的异常，避免与上面的 onerror 重复
@@ -91,7 +66,6 @@ function __init() {
     if (errorTarget !== window && errorTarget.nodeName && LOAD_ERROR_TYPE[errorTarget.nodeName.toUpperCase()]) {
       handleError(formatLoadError(errorTarget));
     } else {
-      // onerror会被覆盖, 因此转为使用Listener进行监控
       var message = event.message,
           filename = event.filename,
           lineno = event.lineno,
@@ -106,7 +80,9 @@ function __init() {
   console.error = function (origin) {
     var logErr = origin.error;
     return function (info) {
-      info = (0, _utils.isObject)(info) ? (0, _stringify.default)(info, (0, _getOwnPropertyNames.default)(info)) : info;
+      var _context;
+
+      info = isObject(info) ? _JSON$stringify(info, _Object$getOwnPropertyNames(info)) : info;
       var errorLog = {
         type: ERROR_CONSOLE,
         desc: info
@@ -116,7 +92,7 @@ function __init() {
         args[_key - 1] = arguments[_key];
       }
 
-      logErr.call.apply(logErr, [origin, info].concat(args));
+      logErr.call.apply(logErr, _concatInstanceProperty(_context = [origin, info]).call(_context, args));
       handleError(errorLog);
     };
   }(console);
@@ -185,7 +161,7 @@ function formatTryCatchError(error) {
 
 function handleError(errorLog) {
   // 是否延时处理
-  if (!config.concat) {
+  if (!_concatInstanceProperty(config)) {
     !needReport(config.sampling) || config.report([errorLog]);
   } else {
     pushError(errorLog);
@@ -216,5 +192,4 @@ function needReport(sampling) {
   return Math.random() < (sampling || 1);
 }
 
-var _default = monitor;
-exports.default = _default;
+export default monitor;

@@ -1,39 +1,21 @@
-"use strict";
+import _concatInstanceProperty from "@babel/runtime-corejs3/core-js/instance/concat";
 
-var _Object$defineProperty = require("@babel/runtime-corejs2/core-js/object/define-property");
-
-_Object$defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.DEFAULT_CONFIG = exports.JS_TRACKER_ERROR_DISPLAY_MAP = exports.JS_TRACKER_ERROR_CONSTANT_MAP = exports.LOG_TYPE_PERFORMANCE = exports.LOG_TYPE_INFO = exports.LOG_TYPE_PRODUCT = exports.LOG_TYPE_ERROR = exports.TEST_FLAG = exports.TARGET = exports.COOKIE_NAME_DIVICE_ID = void 0;
-var COOKIE_NAME_DIVICE_ID = 'crosSdkDT2019DeviceId';
-exports.COOKIE_NAME_DIVICE_ID = COOKIE_NAME_DIVICE_ID;
-var TARGET = 'https://test.com/dig'; // 打点服务器，或Nginx地址
-// pid string 工程id:platfe_saas
-// uuid string 用户信息
-// ucid string 用户信息
-// ssid string 用户信息
-// mac string mac地址
+/** @format */
+export var COOKIE_NAME_DIVICE_ID = 'crosSdkDT2019DeviceId';
+export var TARGET = 'https://test.com/dig'; // 打点服务器，或Nginx地址
 // 测试标记符
 
-exports.TARGET = TARGET;
-var TEST_FLAG = 'b47ca710747e96f1c523ebab8022c19e9abaa56b';
-exports.TEST_FLAG = TEST_FLAG;
-var LOG_TYPE_ERROR = 'error'; // 错误日志
+export var TEST_FLAG = 'b47ca710747e96f1c523ebab8022c19e9abaa56b';
+export var LOG_TYPE_ERROR = 'error'; // 错误日志
 
-exports.LOG_TYPE_ERROR = LOG_TYPE_ERROR;
-var LOG_TYPE_PRODUCT = 'product'; // 产品指标
+export var LOG_TYPE_PRODUCT = 'product'; // 产品指标
 
-exports.LOG_TYPE_PRODUCT = LOG_TYPE_PRODUCT;
-var LOG_TYPE_INFO = 'info'; // 尚未使用
+export var LOG_TYPE_INFO = 'info'; // 尚未使用
 
-exports.LOG_TYPE_INFO = LOG_TYPE_INFO;
-var LOG_TYPE_PERFORMANCE = 'perf'; // 性能指标
+export var LOG_TYPE_PERFORMANCE = 'perf'; // 性能指标
 // 定义JS_TRACKER错误类型码
 
-exports.LOG_TYPE_PERFORMANCE = LOG_TYPE_PERFORMANCE;
-var JS_TRACKER_ERROR_CONSTANT_MAP = {
+export var JS_TRACKER_ERROR_CONSTANT_MAP = {
   1: 'ERROR_RUNTIME',
   2: 'ERROR_SCRIPT',
   3: 'ERROR_STYLE',
@@ -43,8 +25,7 @@ var JS_TRACKER_ERROR_CONSTANT_MAP = {
   7: 'ERROR_CONSOLE',
   8: 'ERROR_TRY_CATCH'
 };
-exports.JS_TRACKER_ERROR_CONSTANT_MAP = JS_TRACKER_ERROR_CONSTANT_MAP;
-var JS_TRACKER_ERROR_DISPLAY_MAP = {
+export var JS_TRACKER_ERROR_DISPLAY_MAP = {
   1: 'JS_RUNTIME_ERROR',
   2: 'SCRIPT_LOAD_ERROR',
   3: 'CSS_LOAD_ERROR',
@@ -55,8 +36,7 @@ var JS_TRACKER_ERROR_DISPLAY_MAP = {
   8: 'TRY_CATCH_ERROR'
 }; // 默认配置
 
-exports.JS_TRACKER_ERROR_DISPLAY_MAP = JS_TRACKER_ERROR_DISPLAY_MAP;
-var DEFAULT_CONFIG = {
+export var DEFAULT_CONFIG = {
   pid: '',
   // [必填]项目id, 由灯塔项目组统一分配
   uuid: '',
@@ -110,8 +90,9 @@ var DEFAULT_CONFIG = {
   // 因此需要业务方传入一个处理函数, 根据当前url解析出真实的页面类型(例如: 二手房列表/经纪人详情页), 以便灯塔系统对错误来源进行分类
   // getPageType函数执行时会被传入一个location对象, 业务方需要完成该函数, 返回对应的的页面类型(50字以内, 建议返回汉字, 方便查看), 默认是返回当前页面的url
   getPageType: function getPageType() {
+    var _context;
+
     var location = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : window.location;
-    return "".concat(location.host).concat(location.pathname);
+    return _concatInstanceProperty(_context = "".concat(location.host)).call(_context, location.pathname);
   }
 };
-exports.DEFAULT_CONFIG = DEFAULT_CONFIG;

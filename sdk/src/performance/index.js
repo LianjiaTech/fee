@@ -1,12 +1,12 @@
-import initRenderingTime from '../first_screen_loading_time/watch_render'
+import initRenderingTime from '../first-screen-loading-time/watch_render'
 
 export default {
-  init (cb) {
+  init(cb) {
     const me = this
     let times = null
     let firstScreenLoadingTime = null
 
-    function reportPerf () {
+    function reportPerf() {
       if (!times || !firstScreenLoadingTime) {
         return
       }
@@ -16,10 +16,14 @@ export default {
         url: `${window.location.host}${window.location.pathname}`
       })
       // 需要等待首屏数据加载完成
-      cb && cb.call(me, 'perf', 20001, { ...times, url: `${window.location.host}${window.location.pathname}` })
+      cb &&
+        cb.call(me, 'perf', 20001, {
+          ...times,
+          url: `${window.location.host}${window.location.pathname}`
+        })
     }
 
-    initRenderingTime(function (loadingTime) {
+    initRenderingTime(function(loadingTime) {
       firstScreenLoadingTime = loadingTime
       reportPerf()
     })

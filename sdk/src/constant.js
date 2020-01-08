@@ -4,12 +4,6 @@ export const COOKIE_NAME_DIVICE_ID = 'crosSdkDT2019DeviceId'
 
 export const TARGET = 'https://test.com/dig' // 打点服务器，或Nginx地址
 
-// pid string 工程id:platfe_saas
-// uuid string 用户信息
-// ucid string 用户信息
-// ssid string 用户信息
-// mac string mac地址
-
 // 测试标记符
 export const TEST_FLAG = 'b47ca710747e96f1c523ebab8022c19e9abaa56b'
 

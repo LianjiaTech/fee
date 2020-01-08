@@ -1,8 +1,5 @@
 import tryJS, { setting } from './try'
-import {
-  debounce,
-  merge
-} from './util'
+import { debounce, merge } from './util'
 import { isObject } from '../utils'
 
 var monitor = {}
@@ -10,7 +7,7 @@ monitor.tryJS = tryJS
 
 setting({ handleTryCatchError: handleTryCatchError })
 
-monitor.init = function (opts) {
+monitor.init = function(opts) {
   __config(opts)
   __init()
 }
@@ -20,7 +17,7 @@ window.ignoreError = false
 // 错误日志列表
 var errorList = []
 // 错误处理回调
-var report = function () { }
+var report = function() {}
 
 var config = {
   concat: true,
@@ -47,44 +44,51 @@ var LOAD_ERROR_TYPE = {
   VIDEO: ERROR_VIDEO
 }
 
-function __config (opts) {
+function __config(opts) {
   merge(opts, config)
 
-  report = debounce(config.report, config.delay, function () {
+  report = debounce(config.report, config.delay, function() {
     errorList = []
   })
 }
 
-function __init () {
+function __init() {
   // 监听 JavaScript 报错异常(JavaScript runtime error)
-  // window.onerror = function () {
-  //   if (window.ignoreError) {
-  //     window.ignoreError = false
-  //     return
-  //   }
-
-  //   handleError(formatRuntimerError.apply(null, arguments))
-  // }
   // 监听资源加载错误(JavaScript Scource failed to load)
-  window.addEventListener('error', function (event) {
-    // 过滤 target 为 window 的异常，避免与上面的 onerror 重复
-    var errorTarget = event.target
-    if (errorTarget !== window && errorTarget.nodeName && LOAD_ERROR_TYPE[errorTarget.nodeName.toUpperCase()]) {
-      handleError(formatLoadError(errorTarget))
-    } else {
-      // onerror会被覆盖, 因此转为使用Listener进行监控
-      let { message, filename, lineno, colno, error } = event
-      const formatedError = formatRuntimerError(message, filename, lineno, colno, error)
-      handleError(formatedError)
-    }
-  }, true)
+  window.addEventListener(
+    'error',
+    function(event) {
+      // 过滤 target 为 window 的异常，避免与上面的 onerror 重复
+      var errorTarget = event.target
+      if (
+        errorTarget !== window &&
+        errorTarget.nodeName &&
+        LOAD_ERROR_TYPE[errorTarget.nodeName.toUpperCase()]
+      ) {
+        handleError(formatLoadError(errorTarget))
+      } else {
+        let { message, filename, lineno, colno, error } = event
+        const formatedError = formatRuntimerError(
+          message,
+          filename,
+          lineno,
+          colno,
+          error
+        )
+        handleError(formatedError)
+      }
+    },
+    true
+  )
 
   // 针对 vue 报错重写 console.error
   // TODO
-  console.error = (function (origin) {
+  console.error = (function(origin) {
     const logErr = origin.error
-    return function (info, ...args) {
-      info = isObject(info) ? JSON.stringify(info, Object.getOwnPropertyNames(info)) : info
+    return function(info, ...args) {
+      info = isObject(info)
+        ? JSON.stringify(info, Object.getOwnPropertyNames(info))
+        : info
       var errorLog = {
         type: ERROR_CONSOLE,
         desc: info
@@ -96,7 +100,7 @@ function __init () {
 }
 
 // 处理 try..catch 错误
-function handleTryCatchError (error) {
+function handleTryCatchError(error) {
   handleError(formatTryCatchError(error))
 }
 
@@ -110,7 +114,7 @@ function handleTryCatchError (error) {
  * @param  {Object} error   error 对象
  * @return {Object}
  */
-function formatRuntimerError (message, source, lineno, colno, error) {
+function formatRuntimerError(message, source, lineno, colno, error) {
   return {
     type: ERROR_RUNTIME,
     desc: message + ' at ' + source + ':' + lineno + ':' + colno,
@@ -124,7 +128,7 @@ function formatRuntimerError (message, source, lineno, colno, error) {
  * @param  {Object} errorTarget
  * @return {Object}
  */
-function formatLoadError (errorTarget) {
+function formatLoadError(errorTarget) {
   return {
     type: LOAD_ERROR_TYPE[errorTarget.nodeName.toUpperCase()],
     desc: errorTarget.baseURI + '@' + (errorTarget.src || errorTarget.href),
@@ -138,7 +142,7 @@ function formatLoadError (errorTarget) {
  * @param  {Object} error error 对象
  * @return {Object} 格式化后的对象
  */
-function formatTryCatchError (error) {
+function formatTryCatchError(error) {
   return {
     type: ERROR_TRY_CATHC,
     desc: error.message,
@@ -151,7 +155,7 @@ function formatTryCatchError (error) {
  *
  * @param  {Object} errorLog    错误日志
  */
-function handleError (errorLog) {
+function handleError(errorLog) {
   // 是否延时处理
   if (!config.concat) {
     !needReport(config.sampling) || config.report([errorLog])
@@ -166,7 +170,7 @@ function handleError (errorLog) {
  *
  * @param  {Object} errorLog 错误日志
  */
-function pushError (errorLog) {
+function pushError(errorLog) {
   if (needReport(config.sampling) && errorList.length < config.maxError) {
     errorList.push(errorLog)
   }
@@ -178,7 +182,7 @@ function pushError (errorLog) {
  * @param  {Number} sampling 0 - 1
  * @return {Boolean}
  */
-function needReport (sampling) {
+function needReport(sampling) {
   return Math.random() < (sampling || 1)
 }
 

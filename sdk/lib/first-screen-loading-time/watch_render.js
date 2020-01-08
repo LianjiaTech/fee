@@ -1,51 +1,33 @@
-"use strict";
-
-var _interopRequireDefault = require("@babel/runtime-corejs2/helpers/interopRequireDefault");
-
-var _Object$defineProperty = require("@babel/runtime-corejs2/core-js/object/define-property");
-
-_Object$defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.default = initRenderingTime;
-
-require("core-js/modules/es6.regexp.to-string");
-
-require("core-js/modules/es6.object.to-string");
-
-require("core-js/modules/es6.regexp.replace");
-
-require("core-js/modules/es6.array.sort");
-
-var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs2/core-js/get-iterator"));
-
-var _now = _interopRequireDefault(require("@babel/runtime-corejs2/core-js/date/now"));
-
-var _proxy = _interopRequireDefault(require("./proxy"));
-
+import _sortInstanceProperty from "@babel/runtime-corejs3/core-js/instance/sort";
+import _filterInstanceProperty from "@babel/runtime-corejs3/core-js/instance/filter";
+import _setTimeout from "@babel/runtime-corejs3/core-js/set-timeout";
+import _getIterator from "@babel/runtime-corejs3/core-js/get-iterator";
+import _Date$now from "@babel/runtime-corejs3/core-js/date/now";
+import proxyRequest from './proxy';
 /**
  * 构建监听
  * @param reportCallback
  */
-function initRenderingTime(reportCallback) {
+
+export default function initRenderingTime(reportCallback) {
   var initDoms = []; // 被加载得doms
 
   var delayNum = 0; // 等待加载得时间
 
   var effective = true; // 操作记录是否有效
 
-  var lastDomChangeTime = (0, _now.default)();
+  var lastDomChangeTime = _Date$now();
 
   var mutationCallback = function mutationCallback(mutationsList) {
-    var now = (0, _now.default)();
+    var now = _Date$now();
+
     lastDomChangeTime = now;
     var _iteratorNormalCompletion = true;
     var _didIteratorError = false;
     var _iteratorError = undefined;
 
     try {
-      for (var _iterator = (0, _getIterator2.default)(mutationsList), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      for (var _iterator = _getIterator(mutationsList), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
         var mutation = _step.value;
         var addedNodes = mutation.addedNodes;
 
@@ -68,7 +50,7 @@ function initRenderingTime(reportCallback) {
                 delayNum++;
                 addNode.addEventListener('load', function () {
                   delayNum--;
-                  item.time = (0, _now.default)();
+                  item.time = _Date$now();
                 }, false);
               }
             })();
@@ -106,7 +88,7 @@ function initRenderingTime(reportCallback) {
    */
 
   function checkLoadFinsh() {
-    var now = (0, _now.default)();
+    var now = _Date$now();
 
     if (now > lastDomChangeTime + 300 && delayNum === 0 && effective) {
       // 没有元素在变化同时，没有操作
@@ -114,7 +96,7 @@ function initRenderingTime(reportCallback) {
       checkDomInfirstScreen(initDoms, reportCallback);
       observer.disconnect(); // 监听销毁
     } else if (effective) {
-      setTimeout(checkLoadFinsh, 300);
+      _setTimeout(checkLoadFinsh, 300);
     }
   } // 监听全局得click和键盘输入事件
 
@@ -123,7 +105,7 @@ function initRenderingTime(reportCallback) {
     return effective = false;
   }); // 控制请求数量
 
-  (0, _proxy.default)(function () {
+  proxyRequest(function () {
     return delayNum++;
   }, function () {
     return delayNum--;
@@ -133,7 +115,6 @@ function initRenderingTime(reportCallback) {
  * 创建event监听
  * @param disAbleEffective
  */
-
 
 function createEventListener(disAbleEffective) {
   window.addEventListener('click', function () {
@@ -156,7 +137,7 @@ function checkDomInfirstScreen(initDoms, reportCallback) {
     var height = document.documentElement.clientHeight;
     var width = document.documentElement.clientWidth; // 筛选出top和left在 width和height得元素
 
-    var firstScreenDoms = initDoms.filter(function (item) {
+    var firstScreenDoms = _filterInstanceProperty(initDoms).call(initDoms, function (item) {
       var dom = item.dom;
 
       var _getOffset = getOffset(dom),
@@ -166,9 +147,11 @@ function checkDomInfirstScreen(initDoms, reportCallback) {
       return left <= width && top <= height;
     }); // 找出最大得时间
 
-    firstScreenDoms.sort(function (itemA, itemB) {
+
+    _sortInstanceProperty(firstScreenDoms).call(firstScreenDoms, function (itemA, itemB) {
       return itemB.time - itemA.time;
     }); // const maxTime = firstScreenDoms.reduce((item, time = 0) => item.time > time ? item.time : time)
+
 
     var firstScreenLoadingTime = firstScreenDoms[0] ? firstScreenDoms[0].time : 0;
     reportCallback(firstScreenLoadingTime);
