@@ -10,21 +10,27 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 import '@babel/polyfill'
 import Vue from 'vue'
-import App from './App'
-import router from './router'
-import store from './store'
-import iView from 'iview'
-import Viser from 'viser-vue'
-import i18n from '@/locale'
-import config from '@/config'
-import importDirective from '@/directive'
-import './index.less'
-import '@/assets/icons/iconfont.css'
-import bus from '@/api/bus'
 import Cookies from 'js-cookie'
 import md5 from 'md5'
 import uuid from 'uuid/v4'
+import iView from 'iview'
+import ElementUI from 'element-ui'
+import Viser from 'viser-vue'
+import VCharts from 'v-charts'
+
+import App from './App'
+import router from './router'
+import store from './store'
+import config from '@/config'
+import importDirective from '@/directive'
+import bus from '@/api/bus'
+
 import toolTip from '@/view/components/toolTip'
+import common from 'src/api/common'
+
+import './index.less'
+import 'src/assets/icons/iconfont.css'
+import 'element-ui/lib/theme-chalk/index.css'
 
 // 设置设备唯一id,并MD5加密
 let onlyUuid = ''
@@ -41,31 +47,33 @@ if (window.localStorage) {
   onlyUuid = Cookies.get('ucid')
 }
 
+Vue.use(iView)
+Vue.use(ElementUI)
+// 全局引入图表
+Vue.use(Viser) // 对应标签 => v-chart, 非常容易和vchart搞混, 将来要把viser干掉
+Vue.use(VCharts) // 对应标签 => ve-chart
 
-
-Vue.use(iView, {
-  i18n: (key, value) => i18n.t(key, value)
-})
-
-Vue.use(Viser)
 Vue.component('toolTip', toolTip)
 
 Vue.config.productionTip = false
+
 /**
  * @description 全局注册应用配置
  */
 Vue.prototype.$config = config
 
 /**
- * @description 注册全局打点函数
- */
-
-/**
  * @description 注册全局bus
  */
 Vue.prototype.$bus = bus
 
-Vue.prototype.resize = function () {
+/**
+ *
+ * @description 存储全局信息
+ */
+Vue.prototype.$common = common
+
+Vue.prototype.resize = function() {
   if (document.createEvent) {
     var event = document.createEvent('HTMLEvents')
     event.initEvent('resize', true, true)
@@ -84,7 +92,6 @@ importDirective(Vue)
 new Vue({
   el: '#app',
   router,
-  i18n,
   store,
-  render: h => h(App)
+  render: (h) => h(App)
 })

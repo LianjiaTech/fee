@@ -1,8 +1,10 @@
-@import '~iview/src/styles/index.less';
+@import "~iview/src/styles/index.less";
 
-@menu-dark-title: #001529;
-@menu-dark-active-bg: #000c17;
-@layout-sider-background: #001529;
+// @primary-color: rgba(45, 140, 240, 0.1);
+@primary-color: #3399ff;
+@menu-dark-title: #1f2835;
+@menu-dark-active-bg: #313540;
+@layout-sider-background: #1f2835;
 //美化界面，表格左右两侧的边框线去掉=>有表格的页面
 .ivu-table-wrapper {
   border: none;
@@ -21,7 +23,12 @@
 .ivu-card {
   border-radius: 0;
 }
-
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active,
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active:hover {
+  background: none !important;
+  color: #2d8cf0;
+  font-weight: bold;
+}
 //去掉图hover上去多余的点
 .g2-tooltip-list-item {
   list-style: none;
@@ -32,3 +39,48 @@
   top: 0;
 }
 
+.ivu-menu-item > i {
+  margin-right: 12px !important;
+}
+
+.ivu-menu-submenu > .ivu-menu > .ivu-menu-item > i {
+  margin-right: 8px !important;
+}
+
+.ivu-select-dropdown.ivu-dropdown-transfer {
+  max-height: 1000px;
+  & div.ivu-dropdown {
+    width: 100%;
+    margin: 0;
+    line-height: normal;
+    padding: 7px 0 6px 16px;
+    clear: both;
+    font-size: 12px !important;
+    white-space: nowrap;
+    list-style: none;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+    &:hover {
+      background: rgba(100, 100, 100, 0.1);
+    }
+    & * {
+      color: #515a6e;
+    }
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background-color: #f5f5f5;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
+  background-color: rgba(73, 80, 96, 0.3);
+}
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 0 rgba(0, 0, 0, 0.3);
+  background-color: #fff;
+  border-radius: 3px;
+}

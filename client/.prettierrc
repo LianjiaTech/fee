@@ -1,7 +1,11 @@
 {
-  "printWidth": 240,
+  "trailingComma": "none",
   "tabWidth": 2,
   "semi": false,
   "singleQuote": true,
-  "trailingComma": "all"
+  "jsxBracketSameLine": true,
+  "arrowParens": "always",
+  "vueIndentScriptAndStyle": true,
+  "printWidth": 240,
+  "proseWrap": "never"
 }

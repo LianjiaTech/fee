@@ -39,14 +39,15 @@ export const getUnion = (arr1, arr2) => {
  * @description 判断要查询的数组是否至少有一个元素包含在目标数组中
  */
 export const hasOneOf = (target, arr) => {
-  return target.some(_ => arr.indexOf(_) > -1)
+  if (!target || !arr) return false
+  return target.some((_) => arr.indexOf(_) > -1)
 }
 
 /**
  * @param {String|Number} value 要验证的字符串或数值
  * @param {*} validList 用来验证的列表
  */
-export function oneOf (value, validList) {
+export function oneOf(value, validList) {
   for (let i = 0; i < validList.length; i++) {
     if (value === validList[i]) {
       return true
@@ -59,7 +60,7 @@ export function oneOf (value, validList) {
  * @param {Number} timeStamp 判断时间戳格式是否是毫秒
  * @returns {Boolean}
  */
-const isMillisecond = timeStamp => {
+const isMillisecond = (timeStamp) => {
   const timeStr = String(timeStamp)
   return timeStr.length > 10
 }
@@ -78,7 +79,7 @@ const isEarly = (timeStamp, currentTime) => {
  * @returns {String} 处理后的字符串
  * @description 如果传入的数值小于10，即位数只有1位，则在前面补充0
  */
-const getHandledValue = num => {
+const getHandledValue = (num) => {
   return num < 10 ? '0' + num : num
 }
 
@@ -104,11 +105,11 @@ const getDate = (timeStamp, startType) => {
  * @param {String|Number} timeStamp 时间戳
  * @returns {String} 相对时间字符串
  */
-export const getRelativeTime = timeStamp => {
+export const getRelativeTime = (timeStamp) => {
   // 判断当前传入的时间戳是秒格式还是毫秒
   const IS_MILLISECOND = isMillisecond(timeStamp)
   // 如果是毫秒格式则转为秒格式
-  if (IS_MILLISECOND) Math.floor(timeStamp /= 1000)
+  if (IS_MILLISECOND) Math.floor((timeStamp /= 1000))
   // 传入的时间戳可以是数值或字符串类型，这里统一转为数值类型
   timeStamp = Number(timeStamp)
   // 获取当前时间时间戳
@@ -153,15 +154,15 @@ export const getExplorer = () => {
 /**
  * @description 绑定事件 on(element, event, handler)
  */
-export const on = (function () {
+export const on = (function() {
   if (document.addEventListener) {
-    return function (element, event, handler) {
+    return function(element, event, handler) {
       if (element && event && handler) {
         element.addEventListener(event, handler, false)
       }
     }
   } else {
-    return function (element, event, handler) {
+    return function(element, event, handler) {
       if (element && event && handler) {
         element.attachEvent('on' + event, handler)
       }
@@ -172,15 +173,15 @@ export const on = (function () {
 /**
  * @description 解绑事件 off(element, event, handler)
  */
-export const off = (function () {
+export const off = (function() {
   if (document.removeEventListener) {
-    return function (element, event, handler) {
+    return function(element, event, handler) {
       if (element && event) {
         element.removeEventListener(event, handler, false)
       }
     }
   } else {
-    return function (element, event, handler) {
+    return function(element, event, handler) {
       if (element && event) {
         element.detachEvent('on' + event, handler)
       }

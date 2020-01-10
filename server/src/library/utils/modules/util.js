@@ -5,16 +5,17 @@ import moment from 'moment'
 import NodeRSA from 'node-rsa'
 import ucConfig from '~/src/configs/user_center'
 
-const decrypt = new NodeRSA({b: 1024})
-// decrypt.setOptions({encryptionScheme: 'pkcs1', environment: 'node'})
-// decrypt.importKey(ucConfig.privateKey, 'pkcs1')
+const decrypt = new NodeRSA({ b: 1024 })
+
+decrypt.setOptions({ encryptionScheme: 'pkcs1', environment: 'node' })
+decrypt.importKey(ucConfig.privateKey, 'pkcs1')
 
 class Util {
   /**
    * 延迟执行函数, 返回一个 Promise
    * @param {number} ms
    */
-  static sleep (ms) {
+  static sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 
@@ -22,11 +23,15 @@ class Util {
    * 根据传入得时间获取这一周得时间
    * @param time
    */
-  static getWeekByTime (time) {
+  static getWeekByTime(time) {
     const baseDay = moment(time).day() || 7
     const days = []
     for (let i = 1; i <= 7; i++) {
-      days.push(moment(time).add(i - baseDay, 'day').format('YYYY-MM-DD'))
+      days.push(
+        moment(time)
+          .add(i - baseDay, 'day')
+          .format('YYYY-MM-DD')
+      )
     }
     return days
   }
@@ -36,7 +41,7 @@ class Util {
    * @param {*} string
    * @param {*} defaultValue
    */
-  static parseIntWithDefault (string, defaultValue = 0) {
+  static parseIntWithDefault(string, defaultValue = 0) {
     let result = parseInt(string)
     if (_.isNaN(result)) {
       return defaultValue
@@ -49,7 +54,7 @@ class Util {
    * @param {*} string
    * @param {*} defaultValue
    */
-  static parseFloatWithDefault (string, defaultValue = 0) {
+  static parseFloatWithDefault(string, defaultValue = 0) {
     let result = parseFloat(string)
     if (_.isNaN(result)) {
       return defaultValue
@@ -57,17 +62,17 @@ class Util {
     return result
   }
 
-  static ip2Locate (ip) {
+  static ip2Locate(ip) {
     const { ip2Locate } = LIpip
 
     return ip2Locate(ip)
   }
-  static decrypt (msg) {
+  static decrypt(msg) {
     return decrypt.decrypt(msg, 'utf-8')
   }
 
   // 判断一个文件夹是否存在
-  static fsExistsSync (path) {
+  static fsExistsSync(path) {
     try {
       fs.accessSync(path, fs.F_OK)
     } catch (e) {

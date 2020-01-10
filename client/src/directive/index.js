@@ -1,6 +1,6 @@
 import directive from './directives'
 
-const importDirective = Vue => {
+const importDirective = (Vue) => {
   /**
    * 拖拽指令 v-draggable="options"
    * options = {

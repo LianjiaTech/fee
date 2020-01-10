@@ -9,11 +9,13 @@ const ChildProcess = require('child_process')
 let version
 try {
   let lastGitTagHash = ChildProcess.execSync('git rev-list --tags --max-count=1')
-    .toString().trim()
+    .toString()
+    .trim()
   console.log('last git tag hash => ')
   console.log(lastGitTagHash)
   let lastGitTag = ChildProcess.execSync(`git describe --tags ${lastGitTagHash}`)
-    .toString().trim()
+    .toString()
+    .trim()
   console.log('last git tag => ')
   console.log(lastGitTag)
   version = lastGitTag
@@ -54,7 +56,7 @@ module.exports = {
     assetsPublicPath: '/'
   },
   localServer: {
-    filter: function (pathname, req) {
+    filter: function(pathname, req) {
       // 本地调试vue的时候会有跨域问题，所以这里自定义一个过滤器进行检测，命中规则就自动转发到接口地址上去
       // 检测是否有接口标志关键字，有的话就转发过去
       return pathname.indexOf('/api/') !== -1

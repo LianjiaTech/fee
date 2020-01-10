@@ -1,4 +1,6 @@
-import axios from '@/libs/api.request'
+/** @format */
+
+import axios from 'src/libs/api.request'
 
 export const login = ({ account, password }) => {
   const data = {

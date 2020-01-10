@@ -13,7 +13,7 @@ const ROLE_ADMIN = 'admin'
 const REGISTER_TYPE_THIRD = 'third'
 const REGISTER_TYPE_SITE = 'site'
 
-const DEFAULT_AVATAR_URL = 'http://ww1.sinaimg.cn/large/00749HCsly1fwofq2t1kaj30qn0qnaai.jpg'
+const DEFAULT_AVATAR_URL = ''
 
 const BASE_TABLE_NAME = 't_o_user'
 const TABLE_COLUMN = [
@@ -50,14 +50,14 @@ const DISPLAY_TABLE_COLUMN = [
  * 加密字符串
  * @param {*} content
  */
-function hash (content) {
+function hash(content) {
   let v1ResultMd5 = md5(`${content}_${MD5_SALT}`)
   let v2ResultMd5 = md5(`${v1ResultMd5}_${MD5_SALT}`)
   let v3ResultMd5 = md5(`${v2ResultMd5}_${MD5_SALT}`)
   return v3ResultMd5
 }
 
-function getTableName () {
+function getTableName() {
   return BASE_TABLE_NAME
 }
 
@@ -65,7 +65,7 @@ function getTableName () {
  * 创建用户
  * @param {object} userInfo
  */
-async function register (account, userInfo) {
+async function register(account, userInfo) {
   const tableName = getTableName()
   // 没有ucid,则把account转为ucid
   let parseAccount = parseAccountToUcid(account)
@@ -121,11 +121,12 @@ async function register (account, userInfo) {
     }
   }
 
-  let insertResult = await Knex
-    .returning('id')
+  let insertResult = await Knex.returning('id')
     .insert(insertData)
     .into(tableName)
-    .catch(e => { return [] })
+    .catch(e => {
+      return []
+    })
   let insertId = _.get(insertResult, [0], 0)
   return insertId > 0
 }
@@ -134,11 +135,10 @@ async function register (account, userInfo) {
  * 获取用户信息
  * @param {String} ucid
  */
-async function get (ucid) {
+async function get(ucid) {
   const tableName = getTableName()
 
-  const result = await Knex
-    .select(TABLE_COLUMN)
+  const result = await Knex.select(TABLE_COLUMN)
     .from(tableName)
     .where('ucid', ucid)
   let user = _.get(result, [0], {})
@@ -150,11 +150,10 @@ async function get (ucid) {
  * @param {String} account
  * @return {Object}
  */
-async function getByAccount (account) {
+async function getByAccount(account) {
   const tableName = getTableName()
 
-  const result = await Knex
-    .select(TABLE_COLUMN)
+  const result = await Knex.select(TABLE_COLUMN)
     .from(tableName)
     .where('account', account)
   let user = _.get(result, [0], {})
@@ -166,11 +165,10 @@ async function getByAccount (account) {
  * @param {String} account
  * @return {Object}
  */
-async function getSiteUserByAccount (account) {
+async function getSiteUserByAccount(account) {
   const tableName = getTableName()
 
-  const result = await Knex
-    .select(TABLE_COLUMN)
+  const result = await Knex.select(TABLE_COLUMN)
     .from(tableName)
     .where('account', account)
     .andWhere('register_type', REGISTER_TYPE_SITE)
@@ -183,10 +181,9 @@ async function getSiteUserByAccount (account) {
  * @param {*} offset
  * @param {*} max
  */
-async function searchByAccount (account, offset = 0, max = 10) {
+async function searchByAccount(account, offset = 0, max = 10) {
   const tableName = getTableName()
-  const rescordList = await Knex
-    .select(TABLE_COLUMN)
+  const rescordList = await Knex.select(TABLE_COLUMN)
     .from(tableName)
     .where('is_delete', '=', 0)
     .andWhere('account', 'like', `%${account}%`)
@@ -200,9 +197,12 @@ async function searchByAccount (account, offset = 0, max = 10) {
  * @param {number} offset    获取数据的偏移量
  * @param {number} max       一页最多展示的数据
  */
-async function getList (offset = 0, max) {
+async function getList(offset = 0, max) {
   const tableName = getTableName()
-  let knex = Knex.select(TABLE_COLUMN).from(tableName).offset(offset).where('is_delete', '=', 0)
+  let knex = Knex.select(TABLE_COLUMN)
+    .from(tableName)
+    .offset(offset)
+    .where('is_delete', '=', 0)
   knex = max ? knex.limit(max) : knex
   const result = await knex.catch(err => {
     Logger.log(err.message, 'getList出错')
@@ -216,7 +216,7 @@ async function getList (offset = 0, max) {
  * @param {number} id
  * @param {object} rawUpdateData = {}
  */
-async function update (ucid, rawUpdateData) {
+async function update(ucid, rawUpdateData) {
   let nowAt = dateFns.getUnixTime(new Date())
 
   let updateRecord = {}
@@ -247,10 +247,9 @@ async function update (ucid, rawUpdateData) {
  * 根据memberid获取member信息
  * @param {*} memberIdList
  */
-async function getUserListByUcid (memberUcidList) {
+async function getUserListByUcid(memberUcidList) {
   const tableName = getTableName()
-  const result = await Knex
-    .select(TABLE_COLUMN)
+  const result = await Knex.select(TABLE_COLUMN)
     .from(tableName)
     .whereIn('ucid', memberUcidList)
     .catch(err => {
@@ -264,7 +263,7 @@ async function getUserListByUcid (memberUcidList) {
  * 检查用户身份是否是管理员
  * @param {*} ucid
  */
-async function isAdmin (ucid) {
+async function isAdmin(ucid) {
   let user = await get(ucid)
   let isExist = _.get(user, ['is_delete'], 1) === 0
   let isAdmin = _.get(user, ['role'], ROLE_DEV) === ROLE_ADMIN
@@ -274,7 +273,7 @@ async function isAdmin (ucid) {
   return false
 }
 
-function formatRecord (rawItem) {
+function formatRecord(rawItem) {
   let item = {}
   for (let key of DISPLAY_TABLE_COLUMN) {
     if (_.has(rawItem, [key])) {
@@ -284,7 +283,7 @@ function formatRecord (rawItem) {
   return item
 }
 
-function parseAccountToUcid (account) {
+function parseAccountToUcid(account) {
   let ucid = ''
   let accountMd5 = md5(account)
   accountMd5 = accountMd5.slice(0, 16)

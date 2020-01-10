@@ -34,70 +34,70 @@
   </Form>
 </template>
 <script>
-export default {
-  name: "LoginForm",
-  props: {
-    accountRules: {
-      type: Array,
-      default: () => {
-        return [{ required: true, message: "账号不能为空", trigger: "blur" }];
-      }
-    },
-    passwordRules: {
-      type: Array,
-      default: () => {
-        return [{ required: true, message: "密码不能为空", trigger: "blur" }];
-      }
-    },
-    nicknameRules: {
-      type: Array,
-      default: () => {
-        return [{ required: true, message: "名字不能为空", trigger: "blur" }];
-      }
-    }
-  },
-  data() {
-    const checkConfirmPassword = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("密码不能为空"));
-      } else if (value !== this.form.password) {
-        callback(new Error("两次密码不一致"));
-      } else {
-        callback();
-      }
-    };
-    return {
-      form: {
-        account: "",
-        password: "",
-        confirmPassword: "",
-        nickname: ""
-      },
-      checkConfirmPassword
-    };
-  },
-  computed: {
-    rules() {
-      return {
-        account: this.accountRules,
-        password: this.passwordRules,
-        confirmPassword: [{ validator: this.checkConfirmPassword, trigger: "blur" }],
-        nickname: this.nicknameRules
-      };
-    }
-  },
-  methods: {
-    handleSubmit() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.$emit("on-success-valid", {
-            account: this.form.account,
-            password: this.form.password,
-            nickname: this.form.nickname
-          });
+  export default {
+    name: 'LoginForm',
+    props: {
+      accountRules: {
+        type: Array,
+        default: () => {
+          return [{ required: true, message: '账号不能为空', trigger: 'blur' }]
         }
-      });
+      },
+      passwordRules: {
+        type: Array,
+        default: () => {
+          return [{ required: true, message: '密码不能为空', trigger: 'blur' }]
+        }
+      },
+      nicknameRules: {
+        type: Array,
+        default: () => {
+          return [{ required: true, message: '名字不能为空', trigger: 'blur' }]
+        }
+      }
+    },
+    data() {
+      const checkConfirmPassword = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('密码不能为空'))
+        } else if (value !== this.form.password) {
+          callback(new Error('两次密码不一致'))
+        } else {
+          callback()
+        }
+      }
+      return {
+        form: {
+          account: '',
+          password: '',
+          confirmPassword: '',
+          nickname: ''
+        },
+        checkConfirmPassword
+      }
+    },
+    computed: {
+      rules() {
+        return {
+          account: this.accountRules,
+          password: this.passwordRules,
+          confirmPassword: [{ validator: this.checkConfirmPassword, trigger: 'blur' }],
+          nickname: this.nicknameRules
+        }
+      }
+    },
+    methods: {
+      handleSubmit() {
+        this.$refs.loginForm.validate((valid) => {
+          if (valid) {
+            this.$emit('on-success-valid', {
+              account: this.form.account,
+              password: this.form.password,
+              nickname: this.form.nickname
+            })
+          }
+        })
+      }
     }
   }
-};
 </script>

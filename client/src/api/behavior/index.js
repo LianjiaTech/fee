@@ -1,43 +1,28 @@
-import axios from '@/libs/api.request'
-import { getProjectId } from '@/libs/util'
-// let id = window.location.href.split('/')[4] || axios.getProject()
+import axios from 'src/libs/api.request'
+import { getProjectId } from 'src/libs/util'
 
-export const getMenuCount = (params) => {
-  return axios.request({
-    url: `project/${getProjectId()}/api/behavior/menu`,
-    method: 'get',
-    params: {
-      ...params
-    }
-  })
-}
+class Behavior {
+  static getMenuCount (startAt, endAt) {
+    return axios.request({
+      url: `project/${getProjectId()}/api/behavior/menu`,
+      method: 'get',
+      params: {
+        q: JSON.stringify({
+          startAt,
+          endAt
+        })
+      }
+    })
+  }
 
-export const getOnlineTime = (params) => {
-  return axios.request({
-    url: `project/${getProjectId()}/api/behavior/online`,
-    method: 'get',
-    params: {
-      ...params
-    }
-  })
+  static getOnlineTime (filterBy, st, et) {
+    return axios.request({
+      url: `project/${getProjectId()}/api/behavior/online_time`,
+      method: 'get',
+      params: {
+        filterBy, st, et
+      }
+    })
+  }
 }
-
-export const getNewUsersByLine = (params) => {
-  return axios.request({
-    url: `project/${getProjectId()}/api/project/summary/new_user/distribution_line`,
-    method: 'get',
-    params: {
-      ...params
-    }
-  })
-}
-
-export const getNewUsersByMap = (params) => {
-  return axios.request({
-    url: `project/${getProjectId()}/api/project/summary/new_user/distribution_map`,
-    method: 'get',
-    params: {
-      ...params
-    }
-  })
-}
+export default Behavior

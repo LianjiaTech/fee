@@ -1,11 +1,11 @@
 import md5 from 'md5'
 /**
-* 计算sign值
-* @param {*} params 表单值
-* @param {*} headers header字段值
-* @param {*} key 申请的appid
-*/
-function getSign (params, headers, key) {
+ * 计算sign值
+ * @param {*} params 表单值
+ * @param {*} headers header字段值
+ * @param {*} key 申请的appid
+ */
+function getSign(params, headers, key) {
   const keyList = Object.keys(params).concat(Object.keys(headers))
   keyList.sort()
   const data = {

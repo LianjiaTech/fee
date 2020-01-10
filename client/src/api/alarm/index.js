@@ -1,5 +1,5 @@
-import axios from '@/libs/api.request'
-import { getProjectId } from '@/libs/util'
+import axios from 'src/libs/api.request'
+import { getProjectId } from 'src/libs/util'
 
 export const getAlarmList = (params) => {
   return axios.request({
@@ -43,10 +43,15 @@ export const update = (params) => {
 export const getAlarmErrorNameList = () => {
   return axios.request({
     url: `project/${getProjectId()}/api/error/distribution/summary`,
+    method: 'post'
+  })
+}
+export const getAlarmPerfNameList = () => {
+  return axios.request({
+    url: `project/${getProjectId()}/api/performance/name_list`,
     method: 'get'
   })
 }
-
 export const getAlarmLog = (params) => {
   return axios.request({
     url: `project/${getProjectId()}/api/alarm/log`,
