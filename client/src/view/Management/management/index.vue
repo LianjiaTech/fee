@@ -20,9 +20,7 @@
         </FormItem>
         <FormItem label="角色">
           <Select style="width:300px" v-model="editParam.role" :placeholder="editIndex.role">
-            <Option v-for="item in roleList" :value="item.value" :key="item.value">{{
-              item.label
-            }}</Option>
+            <Option v-for="item in roleList" :value="item.value" :key="item.value">{{ item.label }}</Option>
           </Select>
         </FormItem>
       </Form>
@@ -134,7 +132,6 @@
       }
     },
     mounted() {
-      this.$dt.behavior('/member_management', '成员管理', window.location.href)
       this.getMemberInfo()
     },
     methods: {

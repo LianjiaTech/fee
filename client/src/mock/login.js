@@ -17,16 +17,16 @@ const USER_MAP = {
   }
 }
 
-export const login = req => {
+export const login = (req) => {
   req = JSON.parse(req.body)
   return {
     code: 200,
-    data: {token: USER_MAP[req.userName].token},
+    data: { token: USER_MAP[req.userName].token },
     msg: ''
   }
 }
 
-export const getUserInfo = req => {
+export const getUserInfo = (req) => {
   const params = getParams(req.url)
   return {
     code: 200,
@@ -35,7 +35,7 @@ export const getUserInfo = req => {
   }
 }
 
-export const logout = req => {
+export const logout = (req) => {
   return {
     code: 200,
     data: null,

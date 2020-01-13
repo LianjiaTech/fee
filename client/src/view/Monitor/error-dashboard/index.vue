@@ -616,7 +616,7 @@
         // 重置url
         this.status.selectedUrl = ''
         this.status.selectedDetail = ''
-        this.$refs.urlListTable.clearCurrentRow()
+        this.$refs.urlListTable && this.$refs.urlListTable.clearCurrentRow()
       },
       addOtherErrorName() {
         // 先判断是errorNames还是errorDetail 还是 error

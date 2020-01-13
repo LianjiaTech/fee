@@ -7,99 +7,52 @@
       <br />
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
         <FormItem label="项目名称" prop="display_name">
-          <Input
-            v-model="formValidate.display_name"
-            placeholder="请输入接入项目名称 中文，50字以内,例如：灯塔项目"
-          ></Input>
+          <Input v-model="formValidate.display_name" placeholder="请输入接入项目名称 中文，50字以内,例如：灯塔项目"></Input>
         </FormItem>
 
         <FormItem label="项目pid" prop="project_name">
-          <Input
-            v-model="formValidate.project_name"
-            placeholder="请输入接入项目名称 项目代号(pid),只允许数字&字母&下划线,50字以内,例如:plat_fee"
-          ></Input>
+          <Input v-model="formValidate.project_name" placeholder="请输入接入项目名称 项目代号(pid),只允许数字&字母&下划线,50字以内,例如:plat_fee"></Input>
         </FormItem>
 
         <FormItem label="负责人" prop="owner_ucid">
-          <Select
-            v-model="formValidate.owner_ucid"
-            filterable
-            remote
-            :loading="pageState.isLoading"
-            :remote-method="filterUser"
-            placeholder="请输入负责人邮箱前缀并选中"
-          >
-            <Option v-for="item in users.userList" :value="item.ucid" :key="item.ucid">{{
-              item.account
-            }}</Option>
+          <Select v-model="formValidate.owner_ucid" filterable remote :loading="pageState.isLoading" :remote-method="filterUser" placeholder="请输入负责人邮箱前缀并选中">
+            <Option v-for="item in users.userList" :value="item.ucid" :key="item.ucid">{{ item.account }}</Option>
           </Select>
         </FormItem>
 
         <Row>
           <Col span="8">
             <FormItem label="姓名" prop="c_desc">
-              <Input
-                v-model="formValidate.c_desc"
-                placeholder="项目负责人姓名"
-                :disabled="true"
-                style="width:250px"
-              ></Input>
+              <Input v-model="formValidate.c_desc" placeholder="项目负责人姓名" :disabled="true" style="width:250px"></Input>
             </FormItem>
           </Col>
           <Col span="4"> </Col>
           <Col span="8">
             <FormItem label="邮箱" prop="mail">
-              <Input
-                v-model="formValidate.mail"
-                placeholder="项目负责人邮箱"
-                :disabled="true"
-                style="width:250px"
-              ></Input>
+              <Input v-model="formValidate.mail" placeholder="项目负责人邮箱" :disabled="true" style="width:250px"></Input>
             </FormItem>
           </Col>
         </Row>
         <FormItem label="每日pv" prop="pv">
-          <Input
-            v-model="formValidate.pv"
-            placeholder="请输入每日得pv数量  项目日均pv:例如:10000(只能填数字)"
-          ></Input>
+          <Input v-model="formValidate.pv" placeholder="请输入每日得pv数量  项目日均pv:例如:10000(只能填数字)"></Input>
         </FormItem>
 
         <FormItem label="首页" prop="home_page">
-          <Input
-            v-model="formValidate.home_page"
-            placeholder="请输入项目首页地址 项目首页例如:http://arms.lianjia.com,如果没有首页可以填相关地址"
-          ></Input>
+          <Input v-model="formValidate.home_page" placeholder="请输入项目首页地址 项目首页例如:http://arms.lianjia.com,如果没有首页可以填相关地址"></Input>
         </FormItem>
 
         <FormItem label="备注" prop="apply_desc">
-          <Input
-            v-model="formValidate.apply_desc"
-            type="textarea"
-            :autosize="{ minRows: 2, maxRows: 5 }"
-            placeholder="填写备注 （审核人员可以看到）"
-          ></Input>
+          <Input v-model="formValidate.apply_desc" type="textarea" :autosize="{ minRows: 2, maxRows: 5 }" placeholder="填写备注 （审核人员可以看到）"></Input>
         </FormItem>
         <FormItem>
-          <Button
-            type="primary"
-            :loading="pageState.submitLoading"
-            @click="handleSubmit('formValidate')"
-            >提交申请</Button
-          >
-          <Button
-            :loading="pageState.submitLoading"
-            @click="handleReset('formValidate')"
-            style="margin-left: 8px"
-          >
+          <Button type="primary" :loading="pageState.submitLoading" @click="handleSubmit('formValidate')">提交申请</Button>
+          <Button :loading="pageState.submitLoading" @click="handleReset('formValidate')" style="margin-left: 8px">
             重置数据
           </Button>
         </FormItem>
       </Form>
     </Card>
-    <div class="apply_finish" v-show="pageState.applyFinish">
-      您提交的"{{ formValidate.display_name }}"已经开始审核，请注意查收邮件
-    </div>
+    <div class="apply_finish" v-show="pageState.applyFinish">您提交的"{{ formValidate.display_name }}"已经开始审核，请注意查收邮件</div>
   </div>
 </template>
 <script>
@@ -161,7 +114,6 @@
         const { name, email } = userDetail
         this.formValidate.mail = email
         this.formValidate.c_desc = `负责人:${name}`
-        console.log(this.formValidate.ucid)
       },
       'formValidate.pv'(pv) {
         const num = parseInt(pv)
@@ -223,9 +175,7 @@
         }
       },
       async handleSubmit(name) {
-        const valid = await new Promise((resolve) =>
-          this.$refs[name].validate((valid) => resolve(valid))
-        )
+        const valid = await new Promise((resolve) => this.$refs[name].validate((valid) => resolve(valid)))
         if (!valid) {
           return this.$Message.error('申请表单校验出错')
         }
