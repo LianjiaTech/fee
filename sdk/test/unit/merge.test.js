@@ -1,8 +1,9 @@
+/* eslint-disable no-undef */
 /**
  * @jest-environment jsdom
  */
 
-import dt from '../../lib/index'
+import dt from '../../src/index'
 
 describe('dt instance init:', () => {
   // 测试覆盖模式

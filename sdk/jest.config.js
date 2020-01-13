@@ -11,12 +11,11 @@ module.exports = {
   // An array of regexp pattern strings used to skip coverage collection
   coveragePathIgnorePatterns: [
     '<rootDir>/test/',
-    '<rootDir>/src/',
+    '<rootDir>/lib/',
     '<rootDir>/config/',
     '<rootDir>/script/',
     '<rootDir>/dist/',
     '<rootDir>/node_modules/'
   ],
-  preset: 'jest-puppeteer',
-  rootDir: './',
+  rootDir: './'
 }
