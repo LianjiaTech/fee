@@ -1,6 +1,6 @@
 /** @format */
 
-import sdkConf from '../config'
+import pkg from '../package.json'
 import jstracker from './js-tracker'
 import promiseTracker from './promise'
 import timeonpageTracker from './timeonpage'
@@ -232,7 +232,7 @@ class Base {
           ...commonConfig,
           timestamp: Date.now(),
           runtime_version: commonConfig.version,
-          sdk_version: sdkConf.version,
+          sdk_version: pkg.version,
           page_type: pageType
         }
       },

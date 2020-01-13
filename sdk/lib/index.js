@@ -31,7 +31,7 @@ function ownKeys(object, enumerableOnly) { var keys = _Object$keys(object); if (
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { var _context9; _forEachInstanceProperty(_context9 = ownKeys(Object(source), true)).call(_context9, function (key) { _defineProperty(target, key, source[key]); }); } else if (_Object$getOwnPropertyDescriptors) { _Object$defineProperties(target, _Object$getOwnPropertyDescriptors(source)); } else { var _context10; _forEachInstanceProperty(_context10 = ownKeys(Object(source))).call(_context10, function (key) { _Object$defineProperty(target, key, _Object$getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 /** @format */
-import sdkConf from '../config';
+import pkg from '../package.json';
 import jstracker from './js-tracker';
 import promiseTracker from './promise';
 import timeonpageTracker from './timeonpage';
@@ -252,7 +252,7 @@ function () {
         common: _objectSpread({}, commonConfig, {
           timestamp: _Date$now(),
           runtime_version: commonConfig.version,
-          sdk_version: sdkConf.version,
+          sdk_version: pkg.version,
           page_type: pageType
         })
       }, info); // 图片打点

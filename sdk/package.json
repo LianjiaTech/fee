@@ -9,7 +9,7 @@
     "prepublish": "npm run build",
     "precommit": "lint-staged",
     "commit": "git-cz",
-    "test": "jest --coverage"
+    "test": "jest --coverage && open ./coverage/lcov-report/index.html"
   },
   "lint-staged": {
     "src/**/*.js": [

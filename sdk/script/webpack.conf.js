@@ -1,5 +1,6 @@
 'use strict'
 const path = require('path')
+const pkg = require('../package.json')
 const config = require('../config')
 const webpack = require('webpack')
 
@@ -27,7 +28,7 @@ let webpackConfig = {
     ]
   },
   output: {
-    path: path.resolve(`./dist/js/${config.version}`),
+    path: path.resolve(`./dist/js/${pkg.version}`),
     filename: '[name].js', // 让生成的js按文件名分开，方便查找
     chunkFilename: path.join('.', 'dist', 'js', '[id].[hash:7].js'),
     publicPath: '/'
