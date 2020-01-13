@@ -1,93 +1,120 @@
-
 # 介绍
+
 fee(灯塔)是前端监控系统，贝壳找房主要前端监控系统，服务公司上百条产品线。
 特点：架构简单、轻量、支持私有化部署。可收集前端设备、系统、环境信息，
-可以对前端页面js报错、资源错误、性能指标进行配置报警等，
+可以对前端页面 js 报错、资源错误、性能指标进行配置报警等，
 并且可以通过上报错误信息引导用户快速定位解决问题。
-## 系统demo
-### 用户行为/用户在线时长
-<img src="https://ws1.sinaimg.cn/large/006ct7Lcly1g1qn2emr3nj32260r8gqz.jpg" width="800" height="300"/>
+
+## 系统 demo
+
+### 菜单点击量统计
+
+<img src="./client/src/assets/github/菜单点击量.png" width="800"/>
+
+### 设备信息统计
+
+<img src="./client/src/assets/github/设备信息.png" width="800"/>
+
+### 打点配置 & 分析
+
+<img src="./client/src/assets/github/打点配置.png" width="800"/>
+<img src="./client/src/assets/github/打点分析.png" width="800"/>
 
 ### 异常监控/页面性能
-<img src="https://ws1.sinaimg.cn/large/006ct7Lcly1g1qn4hm2g5j328417q7ag.jpg"  width="800" height="400"/>
+
+<img src="./client/src/assets/github/性能监控.png"  width="800"/>
 
 ### 异常监控/错误看板
-<img src="https://ws1.sinaimg.cn/large/006ct7Lcly1g1qn6t0odrj328a12sjyo.jpg"  width="800" height="400"/>
+
+<img src="./client/src/assets/github/错误监控.png"  width="800"/>
 
 ### 报警/报警日志
-<img src="https://ws1.sinaimg.cn/large/006ct7Lcly1g1qn8o98y0j32700vyq83.jpg"  width="800" height="400"/>
+
+<img src="./client/src/assets/github/报警配置.png" width="800"/>
+
+<img src="./client/src/assets/github/报警统计.png" width="800"/>
+
+### 环比数据
+
+<img src="./client/src/assets/github/环比数据.png" width="800"/>
 
 # 环境搭建
+
 1. [mysql](https://www.mysql.com/)
 2. [Node.js](http://nodejs.cn/)
 3. [redis](https://redis.io/)
-4. 克隆项目 在克隆项目之前确保你的nodejs、mysql和redis环境是可用的。
+4. 克隆项目 在克隆项目之前确保你的 nodejs、mysql 和 redis 环境是可用的。
+
    ```bash
     mkdir -p ~/www/ \
     &&  cd ~/www/ \
     &&  git clone git@github.com:LianjiaTech/fee.git \
     &&  cd fee
-    ```
-    在~/www/openfee找到我们clone的项目
+   ```
+
+   在~/www/openfee 找到我们 clone 的项目
 
 5. 配置数据库(在**server/src/configs/mysql.js**中修改主机地址/数据库端口/数据库用户名/数据库密码/数据库库名)，在数据库中创建一个空的名字叫做**『platform』**的数据库。
-    ```javascript
-    const development = {
-    host: '127.0.0.1', // 主机地址
-    port: '3306', // 数据库端口
-    user: 'root', // 数据库用户名
-    password: '00000000', // 数据库密码
-    database: 'platform'  // 数据库库名
-    }
-                                                        
-    ```
-6. 配置redis(在**server/src/configs/redis.js**中修改主机地址/redis端口)。
-    ```javascript
-    // 开发环境配置
-    const development = {
-    host: '127.0.0.1', // 主机地址
-    port: '6379' // redis端口
-    }
-                                                        
-    ```
+   ```javascript
+   const development = {
+     host: '127.0.0.1', // 主机地址
+     port: '3306', // 数据库端口
+     user: 'root', // 数据库用户名
+     password: '00000000', // 数据库密码
+     database: 'platform' // 数据库库名
+   }
+   ```
+6. 配置 redis(在**server/src/configs/redis.js**中修改主机地址/redis 端口)。
+   ```javascript
+   // 开发环境配置
+   const development = {
+     host: '127.0.0.1', // 主机地址
+     port: '6379' // redis端口
+   }
+   ```
 
- 
-
-7. 安装依赖
+7) 安装依赖
    在项目 **server** 目录下
    ```javascript
    npm install
    ```
-8. 启动编译dist服务
+8) 启动编译 dist 服务
    打开一个新的**窗口**在项目 **server** 目录下
    ```javascript
    npm run watch
    ```
-9.  生成数据库表
+9) 生成数据库表
    在项目 **server** 目录下
-   ```javascript
-   npm run fee Utils:TemplateSQL 
-   ```
-11. 启动server服务
-   在项目 **server** 目录下
-   ```javascript
-   npm run dev
-   ```
-12. 安装UI服务依赖
-   在项目 **client** 目录下
-   ```javascript
-   npm install
-   ```
-11. 安装UI服务依赖
-   在项目 **client** 目录下
-   ```javascript
-   npm run dev
-   ```
+
+```javascript
+npm run fee Utils:TemplateSQL
+```
+
+11. 启动 server 服务
+    在项目 **server** 目录下
+
+```javascript
+npm run dev
+```
+
+12. 安装 UI 服务依赖
+    在项目 **client** 目录下
+
+```javascript
+npm install
+```
+
+11. 安装 UI 服务依赖
+    在项目 **client** 目录下
+
+```javascript
+npm run dev
+```
 
 12. 访问本地地址:**127.0.0.1:8080**，
-   进行**注册**，**登录**之后，就能看到模板项目数据了。
+    进行**注册**，**登录**之后，就能看到模板项目数据了。
 
-1.  npm依赖插件说明
+1.  npm 依赖插件说明
 
 ```javascript
 dependencies =>
@@ -123,9 +150,8 @@ standard                    =>  JS Standard代码规范
 ```
 
 # 加入群来和开发人员讨论问题
-<img src="https://ws1.sinaimg.cn/large/006ct7Lcly1g1qng48hquj30kj0s276g.jpg" width="180" height="250"/>
 
-
+<img src="./client/src/assets/github/qq.jpeg" width="180" height="250"/>
 
 ## License
 
