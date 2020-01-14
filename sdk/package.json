@@ -1,6 +1,6 @@
 {
   "name": "fee-sdk",
-  "version": "1.1.0-beta.1",
+  "version": "1.1.0",
   "description": "init",
   "main": "lib/index.js",
   "scripts": {

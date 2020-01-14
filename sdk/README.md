@@ -1,7 +1,3 @@
-# 发版 Check List
-
-- [ ] 目前有两处修改版本号的地方, config/index.js & package.json, 两处版本号是否统一
-
 # 安装与使用
 
 使用项目中自带的 SDK 包，引入进行打点
