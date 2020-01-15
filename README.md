@@ -9,34 +9,34 @@ fee(灯塔)是前端监控系统，贝壳找房主要前端监控系统，服务
 
 ### 菜单点击量统计
 
-<img src="./client/src/assets/github/菜单点击量.png" width="800"/>
+<img src="./client/src/assets/github/1.png" width="800"/>
 
 ### 设备信息统计
 
-<img src="./client/src/assets/github/设备信息.png" width="800"/>
+<img src="./client/src/assets/github/2.png" width="800"/>
 
 ### 打点配置 & 分析
 
-<img src="./client/src/assets/github/打点配置.png" width="800"/>
-<img src="./client/src/assets/github/打点分析.png" width="800"/>
+<img src="./client/src/assets/github/3.png" width="800"/>
+<img src="./client/src/assets/github/4.png" width="800"/>
 
 ### 异常监控/页面性能
 
-<img src="./client/src/assets/github/性能监控.png"  width="800"/>
+<img src="./client/src/assets/github/5.png"  width="800"/>
 
 ### 异常监控/错误看板
 
-<img src="./client/src/assets/github/错误监控.png"  width="800"/>
+<img src="./client/src/assets/github/6.png"  width="800"/>
 
 ### 报警/报警日志
 
-<img src="./client/src/assets/github/报警配置.png" width="800"/>
+<img src="./client/src/assets/github/7.png" width="800"/>
 
-<img src="./client/src/assets/github/报警统计.png" width="800"/>
+<img src="./client/src/assets/github/8.png" width="800"/>
 
 ### 环比数据
 
-<img src="./client/src/assets/github/环比数据.png" width="800"/>
+<img src="./client/src/assets/github/9.png" width="800"/>
 
 # 环境搭建
 
