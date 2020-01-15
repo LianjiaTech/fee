@@ -17,6 +17,7 @@ export default [
     meta: {
       title: 'Login - 登录',
       hideInMenu: true,
+      noLoginRequired: true
     },
     component: () => import('src/view/login/login.vue')
   },
@@ -32,7 +33,6 @@ export default [
   {
     path: '/project/:id',
     redirect: `/project/:id/home`,
-    name: 'home',
     meta: {
       hideInMenu: true,
       notCache: true

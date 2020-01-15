@@ -21,7 +21,7 @@ router.beforeEach(async (to, from, next) => {
   if (!token) {
     // 不需要登录的页面，则直接跳转
     // 未登录且要跳转的页面不是登录页，则重定向到登录页
-    to.meta && to.meta.noLoginRequired ? next() : (window.location.href = `/login`)
+    to.meta && to.meta.noLoginRequired ? next() : next({ replace: true, name: 'login' })
   } else {
     // 已登录
     if (!to.name) {

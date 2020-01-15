@@ -162,7 +162,7 @@
         })
       },
       async destroyAccount() {
-        const result = await apiCancelAccount()
+        const result = await apiDestroyAccount()
         this.$Message.info(result.msg)
         if (result.action === 'success') {
           this.$nextTick(() => {
@@ -188,7 +188,7 @@
             this.$Message.info(result.msg)
             if (result.action === 'success') {
               await this.getLoginUserData()
-              this.userForm.nickname = ''
+              // this.userForm.nickname = ''
             }
           } else {
             this.$Message.error('修改失败,请仔细阅读提示')

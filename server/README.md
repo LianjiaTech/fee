@@ -1,5 +1,6 @@
 # 生成建表语句
 创建platform数据库, 然后执行`npm run fee Utils:GenerateSQL 1,2,3,4,5,6,7,8,9,10 '2018-01' '2020-10' > init.sql` 生成数据库SQL, 执行`mysql -u root -h 127.0.0.1  platform -p < init.sql`, 执行建表语句
+
 # 启动server
 1.  启动项目 => `npm run watch` 启动babel监控, `npm run dev` 启动项目.
 2.  访问 http://localhost:3000/ 查看效果
@@ -10,10 +11,12 @@
             -   plat-fe             
                 -   fee-rd          =>  项目路径
             -   docker              =>  [辅助]docker所在路径
-            -   ha_develope_env     =>  [辅助]ha_develope_env所在路径
-            -   htdocs_in_docker    =>  [辅助]php相关代码目录(指向~/www/docker/base/data0/www/htdocs的快捷方式)
     
     ```
+# 启动消费进程
+- 建议将数据清洗任务单独部署到一台任务机上，以保证后台服务的稳定性。
+- 在任务机上部署代码成功后，使用 `pm2 start pm2_fee_consume.json` 指令启动数据清洗任务进程，默认以cluster模式启动六个进程同时消费
+
 # 读取Nginx日志规范，及打点规范
 1. Nginx需要打点的日志格式
     ```text
@@ -39,7 +42,7 @@ nginxLogFilePath/YYYYMM/DD/HH/mm.log
 ```
 
 #   任务执行周期
-    1.  每分钟一次(准实时)
+    1.  由`./commands/task/consume/`消费任务独立进行(实时)
         1.  原始数据入库
             1.  错误数据入库(延迟2分钟)
         2.  按分钟统计
@@ -307,4 +310,4 @@ nginxLogFilePath/YYYYMM/DD/HH/mm.log
     ```
 4.  在dev数据库执行生成的SQL
 5.  dev数据执行完毕, 确认无误后, 在线上数据库执行生成的SQL
-6.  对接完成``
+6.  对接完成
