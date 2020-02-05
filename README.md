@@ -4,18 +4,18 @@ fee(灯塔)是前端监控系统，贝壳找房主要前端监控系统，服务
 特点：架构简单、轻量、支持私有化部署。可收集前端设备、系统、环境信息，
 可以对前端页面js报错、资源错误、性能指标进行配置报警等，
 并且可以通过上报错误信息引导用户快速定位解决问题。
-## 系统demo
-### 用户行为/用户在线时长
-<img src="https://ws1.sinaimg.cn/large/006ct7Lcly1g1qn2emr3nj32260r8gqz.jpg" width="800" height="300"/>
+## 系统功能
+### 1、用户行为/用户在线时长
+<!-- <img src="https://ws1.sinaimg.cn/large/006ct7Lcly1g1qn2emr3nj32260r8gqz.jpg" width="800" height="300"/> -->
 
-### 异常监控/页面性能
-<img src="https://ws1.sinaimg.cn/large/006ct7Lcly1g1qn4hm2g5j328417q7ag.jpg"  width="800" height="400"/>
+### 2、异常监控/页面性能
+<!-- <img src="https://ws1.sinaimg.cn/large/006ct7Lcly1g1qn4hm2g5j328417q7ag.jpg"  width="800" height="400"/> -->
 
-### 异常监控/错误看板
-<img src="https://ws1.sinaimg.cn/large/006ct7Lcly1g1qn6t0odrj328a12sjyo.jpg"  width="800" height="400"/>
+### 3、异常监控/错误看板
+<!-- <img src="https://ws1.sinaimg.cn/large/006ct7Lcly1g1qn6t0odrj328a12sjyo.jpg"  width="800" height="400"/> -->
 
-### 报警/报警日志
-<img src="https://ws1.sinaimg.cn/large/006ct7Lcly1g1qn8o98y0j32700vyq83.jpg"  width="800" height="400"/>
+### 4、报警/报警日志
+<!-- <img src="https://ws1.sinaimg.cn/large/006ct7Lcly1g1qn8o98y0j32700vyq83.jpg"  width="800" height="400"/> -->
 
 # 环境搭建
 1. [mysql](https://www.mysql.com/)
@@ -123,7 +123,7 @@ standard                    =>  JS Standard代码规范
 ```
 
 # 加入群来和开发人员讨论问题
-<img src="https://ws1.sinaimg.cn/large/006ct7Lcly1g1qng48hquj30kj0s276g.jpg" width="180" height="250"/>
+<img src="./client/src/assets/github/qq.jpeg" width="180" height="250"/>
 
 
 
