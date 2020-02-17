@@ -5,6 +5,8 @@ fee(灯塔)是前端监控系统，贝壳找房主要前端监控系统，服务
 可以对前端页面 js 报错、资源错误、性能指标进行配置报警等，
 并且可以通过上报错误信息引导用户快速定位解决问题。
 
+## NOTE: 2.0 版本存储、检索打点数据依赖[ElasticSearch@6.x](https://www.elastic.co/guide/en/elasticsearch/reference/6.2/getting-started.html)
+
 ## 系统 demo
 
 ### 菜单点击量统计
@@ -43,7 +45,8 @@ fee(灯塔)是前端监控系统，贝壳找房主要前端监控系统，服务
 1. [mysql](https://www.mysql.com/)
 2. [Node.js](http://nodejs.cn/)
 3. [redis](https://redis.io/)
-4. 克隆项目 在克隆项目之前确保你的 nodejs、mysql 和 redis 环境是可用的。
+4. [ElasticSearch](https://www.elastic.co/guide/en/elasticsearch/reference/6.2/getting-started.html)
+5. 克隆项目 在克隆项目之前确保你的 nodejs、mysql 和 redis 环境是可用的。
 
    ```bash
     mkdir -p ~/www/ \
@@ -54,7 +57,7 @@ fee(灯塔)是前端监控系统，贝壳找房主要前端监控系统，服务
 
    在~/www/openfee 找到我们 clone 的项目
 
-5. 配置数据库(在**server/src/configs/mysql.js**中修改主机地址/数据库端口/数据库用户名/数据库密码/数据库库名)，在数据库中创建一个空的名字叫做**『platform』**的数据库。
+6. 配置数据库(在**server/src/configs/mysql.js**中修改主机地址/数据库端口/数据库用户名/数据库密码/数据库库名)，在数据库中创建一个空的名字叫做**『platform』**的数据库。
    ```javascript
    const development = {
      host: '127.0.0.1', // 主机地址
@@ -64,7 +67,7 @@ fee(灯塔)是前端监控系统，贝壳找房主要前端监控系统，服务
      database: 'platform' // 数据库库名
    }
    ```
-6. 配置 redis(在**server/src/configs/redis.js**中修改主机地址/redis 端口)。
+7. 配置 redis(在**server/src/configs/redis.js**中修改主机地址/redis 端口)。
    ```javascript
    // 开发环境配置
    const development = {
@@ -72,49 +75,59 @@ fee(灯塔)是前端监控系统，贝壳找房主要前端监控系统，服务
      port: '6379' // redis端口
    }
    ```
+8. 配置 elasticsearch(在**server/src/configs/elasticsearch.js**中修改主机地址/elasticsearch 端口)。
 
-7) 安装依赖
+   ```javascript
+   // 开发环境配置
+   const development = {
+     host: '127.0.0.1:9200' // 主机地址
+   }
+   ```
+
+9. 安装依赖
    在项目 **server** 目录下
    ```javascript
    npm install
    ```
-8) 启动编译 dist 服务
-   打开一个新的**窗口**在项目 **server** 目录下
-   ```javascript
-   npm run watch
-   ```
-9) 生成数据库表
-   在项目 **server** 目录下
+10. 启动编译 dist 服务
+    打开一个新的**窗口**在项目 **server** 目录下
+
+```javascript
+npm run watch
+```
+
+11. 生成数据库表
+    在项目 **server** 目录下
 
 ```javascript
 npm run fee Utils:TemplateSQL
 ```
 
-11. 启动 server 服务
+12. 启动 server 服务
     在项目 **server** 目录下
 
 ```javascript
 npm run dev
 ```
 
-12. 安装 UI 服务依赖
+13. 安装 UI 服务依赖
     在项目 **client** 目录下
 
 ```javascript
 npm install
 ```
 
-11. 安装 UI 服务依赖
+14. 安装 UI 服务依赖
     在项目 **client** 目录下
 
 ```javascript
 npm run dev
 ```
 
-12. 访问本地地址:**127.0.0.1:8080**，
-    进行**注册**，**登录**之后，就能看到模板项目数据了。
+15. 访问本地地址 **`127.0.0.1:8080`**，
+    进行**注册**，**登录**之后，就能看到模板项目了
 
-1.  npm 依赖插件说明
+## npm 依赖说明
 
 ```javascript
 dependencies =>
@@ -122,6 +135,7 @@ dependencies =>
 mysql           =>  mysql客户端
 ioredis         =>  redis客户端
 knex            =>  SQL Query Builder
+elasticsearch   => elasticsearch客户端
 @adonisjs/ace   =>  命令注册/管理工具
 node-schedule   =>  node版crontab, 用于进程调度
 log4js          =>  日志记录
