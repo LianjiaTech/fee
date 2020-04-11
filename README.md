@@ -128,7 +128,7 @@ standard                    =>  JS Standard代码规范
 
 # 项目搭建背景，以及前端监控平台搭建原理，设计思路，一步一步教你做。
 
-<img src="./client/src/assets/github/book.jpg" width="380" height="450"/>
+<img src="./client/src/assets/github/book.jpg" width="400" height="450"/>
 
 <a href="https://item.jd.com/12639273.html" target="_blank" style="font-size:14px">购书链接</a>
 
