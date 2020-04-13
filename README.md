@@ -1,5 +1,11 @@
 
-# 灯塔 V1.0
+# 灯塔
+
+## 介绍
+**fee（灯塔）** 是前端监控系统，贝壳找房主要前端监控系统，服务公司上百条产品线。
+特点：**架构简单、轻量、支持私有化部署**。可收集前端**设备、系统、环境**信息，
+可以对前端**页面js报错、资源错误、性能指标**进行配置报警等，
+并且可以通过上报错误信息引导用户快速定位解决问题。
 
 ## 系统功能
 
@@ -140,6 +146,16 @@ standard                    =>  JS Standard代码规范
 
 <img src="./client/src/assets/github/qq.jpeg" width="180" height="250"/>
 
+# 作者书籍
+
+项目搭建背景，以及前端监控平台搭建原理，设计思路，一步一步教你做。
+
+<img src="./client/src/assets/github/book.jpg" width="400" height="450"/>
+
+<a href="https://item.jd.com/12639273.html" target="_blank" style="font-size:14px">购书链接</a>
+
 ## License
 
-[MIT](http://opensource.org/licenses/MIT) Copyright(c) 2017 Lianjia, Inc. All Rights Reserved
+[MIT](http://opensource.org/licenses/MIT)
+
+Copyright(c) 2017 Lianjia, Inc. All Rights Reserved
