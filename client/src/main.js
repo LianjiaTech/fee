@@ -41,8 +41,6 @@ if (window.localStorage) {
   onlyUuid = Cookies.get('ucid')
 }
 
-
-
 Vue.use(iView, {
   i18n: (key, value) => i18n.t(key, value)
 })

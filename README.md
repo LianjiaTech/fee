@@ -1,93 +1,107 @@
 
-# 介绍
-fee(灯塔)是前端监控系统，贝壳找房主要前端监控系统，服务公司上百条产品线。
-特点：架构简单、轻量、支持私有化部署。可收集前端设备、系统、环境信息，
-可以对前端页面js报错、资源错误、性能指标进行配置报警等，
-并且可以通过上报错误信息引导用户快速定位解决问题。
+# 灯塔 V1.0
+
 ## 系统功能
-### 1、用户行为/用户在线时长
-<!-- <img src="https://ws1.sinaimg.cn/large/006ct7Lcly1g1qn2emr3nj32260r8gqz.jpg" width="800" height="300"/> -->
 
-### 2、异常监控/页面性能
-<!-- <img src="https://ws1.sinaimg.cn/large/006ct7Lcly1g1qn4hm2g5j328417q7ag.jpg"  width="800" height="400"/> -->
+### 用户行为
 
-### 3、异常监控/错误看板
-<!-- <img src="https://ws1.sinaimg.cn/large/006ct7Lcly1g1qn6t0odrj328a12sjyo.jpg"  width="800" height="400"/> -->
+- 用户在线时长
 
-### 4、报警/报警日志
-<!-- <img src="https://ws1.sinaimg.cn/large/006ct7Lcly1g1qn8o98y0j32700vyq83.jpg"  width="800" height="400"/> -->
+![在线时长](./client/src/assets/github/1.0/onlineTime.png)
 
-# 环境搭建
+- 菜单点击量
+
+![菜单点击量](./client/src/assets/github/1.0/menuClick.jpg)
+
+- 用户增长
+
+![用户增长](./client/src/assets/github/1.0/userGrowth_01.jpg)
+![用户增长](./client/src/assets/github/1.0/userGrowth_02.jpg)
+
+### 异常监控
+
+- 页面性能
+
+![页面性能](./client/src/assets/github/1.0/perf_01.jpg)
+![页面性能](./client/src/assets/github/1.0/perf_02.jpg)
+
+- 错误看板
+
+![错误看板](./client/src/assets/github/1.0/error.jpg)
+
+### 报警
+
+- 报警配置
+
+![报警配置](./client/src/assets/github/1.0/alarmConfig.jpg)
+
+- 报警日志
+
+![报警日志](./client/src/assets/github/1.0/alarmLog.jpg)
+
+## 环境搭建
+
+**下述`mysql`以及`redis`环境的搭建，大家可以移步配套 [Docker集成环境一键部署](https://github.com/alphawq/Fee-dev-docker)（欢迎大家`star`）。可以帮助大家一键创建相关服务环境，免去繁琐的环境部署与配置给大家带来的不必要的时间开销！**
 1. [mysql](https://www.mysql.com/)
 2. [Node.js](http://nodejs.cn/)
 3. [redis](https://redis.io/)
-4. 克隆项目 在克隆项目之前确保你的nodejs、mysql和redis环境是可用的。
+4. 克隆项目 在克隆项目之前确保你的`nodejs`、`mysql`和`redis`环境是可用的。
    ```bash
     mkdir -p ~/www/ \
     &&  cd ~/www/ \
     &&  git clone git@github.com:LianjiaTech/fee.git \
     &&  cd fee
     ```
-    在~/www/openfee找到我们clone的项目
-
-5. 配置数据库(在**server/src/configs/mysql.js**中修改主机地址/数据库端口/数据库用户名/数据库密码/数据库库名)，在数据库中创建一个空的名字叫做**『platform』**的数据库。
+    在`~/www/openfee`找到我们克隆的项目
+5. 配置数据库
+- 在`server/src/configs/mysql.js`中修改主机地址/数据库端口/数据库用户名/数据库密码/数据库库名
+- 在数据库中创建一个空的名字叫做『`platform`』的数据库。
     ```javascript
     const development = {
-    host: '127.0.0.1', // 主机地址
-    port: '3306', // 数据库端口
-    user: 'root', // 数据库用户名
-    password: '00000000', // 数据库密码
-    database: 'platform'  // 数据库库名
+      host: '127.0.0.1', // 主机地址
+      port: '3306', // 数据库端口
+      user: 'root', // 数据库用户名
+      password: '00000000', // 数据库密码
+      database: 'platform'  // 数据库库名
     }
-                                                        
     ```
-6. 配置redis(在**server/src/configs/redis.js**中修改主机地址/redis端口)。
+6. 配置`redis`
+- 在`server/src/configs/redis.js`中修改主机地址或`redis`端口
     ```javascript
     // 开发环境配置
     const development = {
-    host: '127.0.0.1', // 主机地址
-    port: '6379' // redis端口
+      host: '127.0.0.1', // 主机地址
+      port: '6379' // redis端口
     }
-                                                        
     ```
-
- 
-
-7. 安装依赖
-   在项目 **server** 目录下
+7. 安装依赖，在项目 `server` 目录下
    ```javascript
    npm install
    ```
-8. 启动编译dist服务
-   打开一个新的**窗口**在项目 **server** 目录下
+8. 启动编译 `dist` 服务，打开一个新的**窗口**在项目 `server` 目录下
    ```javascript
    npm run watch
    ```
-9.  生成数据库表
-   在项目 **server** 目录下
+9. 生成数据库表，在项目 `server` 目录下
    ```javascript
    npm run fee Utils:TemplateSQL 
    ```
-11. 启动server服务
-   在项目 **server** 目录下
+1. 启动`server`服务，在项目 `server` 目录下
    ```javascript
    npm run dev
    ```
-12. 安装UI服务依赖
-   在项目 **client** 目录下
+1. 安装UI服务依赖，在项目 `client` 目录下
    ```javascript
    npm install
    ```
-11. 安装UI服务依赖
-   在项目 **client** 目录下
+1. 安装UI服务依赖，在项目 `client` 目录下
    ```javascript
    npm run dev
    ```
 
-12. 访问本地地址:**127.0.0.1:8080**，
-   进行**注册**，**登录**之后，就能看到模板项目数据了。
+1. 访问本地地址: `127.0.0.1:8080`, 进行**注册**、**登录**之后，就能看到模板项目数据了。
 
-1.  npm依赖插件说明
+### npm依赖插件说明
 
 ```javascript
 dependencies =>
@@ -122,13 +136,10 @@ nodemon                     =>  动态启动/载入项目
 standard                    =>  JS Standard代码规范
 ```
 
-# 加入群来和开发人员讨论问题
+## 加入群来和开发人员讨论问题
+
 <img src="./client/src/assets/github/qq.jpeg" width="180" height="250"/>
-
-
 
 ## License
 
-[MIT](http://opensource.org/licenses/MIT)
-
-Copyright(c) 2017 Lianjia, Inc. All Rights Reserved
+[MIT](http://opensource.org/licenses/MIT) Copyright(c) 2017 Lianjia, Inc. All Rights Reserved
