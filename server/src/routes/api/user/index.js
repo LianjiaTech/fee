@@ -126,7 +126,7 @@ const register = RouterConfigBuilder.routerConfigBuilder('/api/user/register', R
     role
   }
   // 判断此账号是否存在
-  let rawUser = MUser.getByAccount(account)
+  let rawUser = await MUser.getByAccount(account)
   if (_.isEmpty(rawUser) || rawUser.is_delete === 1) {
     const isSuccess = await MUser.register(account, userInfo)
     if (isSuccess) {
