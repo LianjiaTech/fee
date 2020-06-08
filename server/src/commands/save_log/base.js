@@ -17,15 +17,24 @@ let rawLogWriteStreamPool = new Map()
 const TEST_LOG_FLAG = 'b47ca710747e96f1c523ebab8022c19e9abaa56b'
 
 class SaveLogBase extends Base {
+
+  get jsonWriteStreamPoolSize() {
+    return jsonWriteStreamPool.size || 0
+  }
+
+  get rawLogWriteStreamPoolSize() {
+    return rawLogWriteStreamPool.size || 0
+  }
+
   isTestLog (content) {
     return content.includes(TEST_LOG_FLAG)
   }
 
   /**
- * 获取写入Stream
- * @param {number} nowAt
- * @returns {WriteStream}
- */
+   * 获取写入Stream
+   * @param {number} nowAt
+   * @returns {WriteStream}
+   */
   getWriteStreamClientByType (nowAt, logType = LKafka.LOG_TYPE_RAW) {
     // 确保logType一定是指定类型
     switch (logType) {
@@ -58,16 +67,16 @@ class SaveLogBase extends Base {
   }
 
   /**
-               * 自动关闭旧Stream
-               */
+   * 自动关闭旧Stream
+   */
   autoCloseOldStream (isCloseAll = false) {
     let nowAt = moment().unix()
-    let startAt = nowAt - 60 * 100
-    let finishAt = nowAt - 60 * 100
+    let startAt = nowAt - 60 * 10
+    let finishAt = nowAt
     let survivalSet = new Set()
     for (let survivalAt = startAt; survivalAt < finishAt; survivalAt = survivalAt + 1) {
-      let survivalAtLogUri = LKafka.getAbsoluteLogUriByType(nowAt, LKafka.LOG_TYPE_JSON)
-      let survivalAtRawLogUri = LKafka.getAbsoluteLogUriByType(nowAt, LKafka.LOG_TYPE_RAW)
+      let survivalAtLogUri = LKafka.getAbsoluteLogUriByType(survivalAt, LKafka.LOG_TYPE_JSON)
+      let survivalAtRawLogUri = LKafka.getAbsoluteLogUriByType(survivalAt, LKafka.LOG_TYPE_RAW)
       if (isCloseAll === false) {
         survivalSet.add(survivalAtLogUri)
         survivalSet.add(survivalAtRawLogUri)
@@ -105,9 +114,9 @@ class SaveLogBase extends Base {
   }
 
   /**
-               * 获取项目列表
-               * @returns {object}
-               */
+   * 获取项目列表
+   * @returns {object}
+   */
   async getProjectMap () {
     let projectList = await MProject.getList()
     let projectMap = {}
@@ -122,11 +131,11 @@ class SaveLogBase extends Base {
   }
 
   /**
-               * 解析日志记录所在的时间戳, 取日志时间作为时间戳, 若日志时间不规范, 则返回0
-               * 客户端时间不可信, 故直接忽略, 以日志时间为准
-               * @param {String} data
-               * @return {Number}
-               */
+   * 解析日志记录所在的时间戳, 取日志时间作为时间戳, 若日志时间不规范, 则返回0
+   * 客户端时间不可信, 故直接忽略, 以日志时间为准
+   * @param {String} data
+   * @return {Number}
+   */
   parseLogCreateAt (data) {
     let nowAt = moment().unix()
     if (_.isString(data) === false) {
@@ -159,11 +168,11 @@ class SaveLogBase extends Base {
   }
 
   /**
-       * 将日志解析为标准格式, 解析失败返回null
-       * @param {string} data
-       * @param {object} projectMap code => project_id格式的项目字典
-       * @returns {object|null}
-       */
+   * 将日志解析为标准格式, 解析失败返回null
+   * @param {string} data
+   * @param {object} projectMap code => project_id格式的项目字典
+   * @returns {object|null}
+   */
   async parseLog (data, projectMap) {
     const info = data.split('\t')
     let url = _.get(info, [15], '')

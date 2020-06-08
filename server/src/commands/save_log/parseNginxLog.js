@@ -6,9 +6,6 @@ import commonConfig from '~/src/configs/common'
 import SaveLogBase from '~/src/commands/save_log/base'
 import LKafka from '~/src/library/kafka'
 
-let jsonWriteStreamPool = new Map()
-let rawLogWriteStreamPool = new Map()
-
 class NginxParseLog extends SaveLogBase {
   static get signature () {
     return `
@@ -30,7 +27,7 @@ class NginxParseLog extends SaveLogBase {
     let nginxLogFilePath = commonConfig.nginxLogFilePath
     let timeAt = moment().unix() - 60
     let timeMoment = moment.unix(timeAt)
-    let formatStr = timeMoment.format('/YYYYMM/DD/HH/mm')
+    let formatStr = timeMoment.format('/YYYY/MM/DD/HH/mm')
     let logAbsolutePath = `${nginxLogFilePath}${formatStr}.log`
     if (fs.existsSync(logAbsolutePath) === false) {
       that.log(`log文件不存在, 自动跳过 => ${logAbsolutePath}`)
@@ -80,7 +77,7 @@ class NginxParseLog extends SaveLogBase {
       let jsonWriteStreamByLogCreateAt = this.getWriteStreamClientByType(logCreateAt, LKafka.LOG_TYPE_JSON)
       jsonWriteStreamByLogCreateAt.write(JSON.stringify(parseResult))
       // 定期清一下
-      if (jsonWriteStreamPool.size > 100 || rawLogWriteStreamPool.size > 100) {
+      if (this.jsonWriteStreamPoolSize > 100 || this.rawLogWriteStreamPool.size > 100) {
         // 每当句柄池满100后, 关闭除距离当前时间10分钟之内的所有文件流
         this.autoCloseOldStream()
       }
