@@ -1,7 +1,7 @@
 import Joi from 'joi'
 import _ from 'lodash'
 import moment from 'moment'
-import BaseValidate from '~/src/commands/save_log/validator/base_validate'
+import BaseValidate from '~/src/commands/task/consume/validator/base_validate'
 
 class EventValidate extends BaseValidate {
   static get typeSchema () {

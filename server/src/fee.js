@@ -36,15 +36,11 @@ const registedCommandList = [
   // 工具类命令
   './commands/utils/generate_sql', //  生成SQL
   './commands/utils/clean_old_log', //  自动删除旧日志
-  './commands/utils/zip_old_log', // 压缩日志
-  './commands/utils/close_delete_index', //  定时关闭集群中的索引
 
   // 测试uc
   './commands/utils/testUC',
   // 心跳
-  './commands/utils/heart_beat',
-  // 初始化日报订阅表
-  './commands/utils/init_daily_subscription'
+  './commands/utils/heart_beat'
 ]
 
 // register commands
