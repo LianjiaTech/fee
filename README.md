@@ -141,6 +141,8 @@ babel-plugin-root-import    =>  解除对相对路径的依赖(项目中通过we
 nodemon                     =>  动态启动/载入项目
 standard                    =>  JS Standard代码规范
 ```
+## 打点服务Demo搭建
+参见<a href="https://github.com/LianjiaTech/fee/blob/master/KAFKA_DEMO.md" target="_blank" style="font-size:14px">打点服务Demo搭建</a>
 
 ## 加入群来和开发人员讨论问题
 
