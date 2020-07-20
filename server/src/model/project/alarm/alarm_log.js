@@ -33,7 +33,7 @@ async function insert (projectId, configId, sendAt, errorName, message) {
     create_time: createTime,
     update_time: updateTime
   }
-  const affectRows = Knex
+  const affectRows = await Knex
     .insert(insertData)
     .into(tableName)
     .catch(err => {
