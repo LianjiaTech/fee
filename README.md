@@ -59,7 +59,8 @@
     &&  cd fee
     ```
     在`~/www/openfee`找到我们克隆的项目
-5. 配置数据库
+    
+5. 配置MySQL
 - 在`server/src/configs/mysql.js`中修改主机地址/数据库端口/数据库用户名/数据库密码/数据库库名
 - 在数据库中创建一个空的名字叫做『`platform`』的数据库。
     ```javascript
@@ -81,31 +82,44 @@
     }
     ```
 7. 安装依赖，在项目 `server` 目录下
-   ```javascript
-   npm install
-   ```
-8. 启动编译 `dist` 服务，打开一个新的**窗口**在项目 `server` 目录下
-   ```javascript
-   npm run watch
-   ```
-9. 生成数据库表，在项目 `server` 目录下
-   ```javascript
-   npm run fee Utils:TemplateSQL 
-   ```
-1. 启动`server`服务，在项目 `server` 目录下
-   ```javascript
-   npm run dev
-   ```
-1. 安装UI服务依赖，在项目 `client` 目录下
-   ```javascript
-   npm install
-   ```
-1. 安装UI服务依赖，在项目 `client` 目录下
-   ```javascript
-   npm run dev
-   ```
+    ```javascript
+    npm install
+    ```
+8. 编译 `server`，打开一个新的**窗口**在项目 `server` 目录下
+    ```javascript
+    npm run watch
+    ```
+9. 启动`server`服务，在项目 `server` 目录下
+    ```javascript
+    npm run dev
+    ```
+10. 创建数据库
+  - a. 在项目 `server` 目录下执行下列指令，会在当前目录下生成 `init.sql` 文件
+    ```javascript
+    npm run fee Utils:GenerateSQL 1 '2020-01' '2020-07' > init.sql
+    ```
+  - b. 复制 `init.sql`中的内容（**不包括文件中的前两行**），完成数据库表的创建。
 
-1. 访问本地地址: `127.0.0.1:8080`, 进行**注册**、**登录**之后，就能看到模板项目数据了。
+11. 初始化样例数据。在项目 `server` 目录下，执行下列指令
+    ```javascript
+    npm run fee Utils:TemplateSQL
+    ```
+    执行成功后，样例数据会被写入数据库中。
+
+12. 安装 `Client` 依赖，在项目 `client` 目录下
+    ```javascript
+    npm install
+    ```
+13. 启动 `Client` 服务，在项目 `client` 目录下
+    ```javascript
+    npm run dev
+    ```
+
+14. 访问本地服务: `127.0.0.1:8080`
+- a. 使用默认管理员账户登录
+  - 账号：test@qq.com
+  - 密码：admin
+- b. 或进行**注册**、**登录**，就能看到模板项目数据了。
 
 ### npm依赖插件说明
 
