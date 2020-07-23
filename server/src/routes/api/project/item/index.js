@@ -19,8 +19,8 @@ let detail = RouterConfigBuilder.routerConfigBuilder('/api/project/item/detail',
   let project = await MProject.get(id)
   project = MProject.formatRecord(project)
 
-  if (_.isEmpty(project)) {
-    res.send(API_RES.showError(`项目id:${id}不存在`))
+  if (_.isEmpty(project) || _.get(project, ['is_delete'], 1) == 1) {
+    res.send(API_RES.showError(`项目id:${id}不存在或已删除`))
   } else {
     res.send(API_RES.showResult(project))
   }
