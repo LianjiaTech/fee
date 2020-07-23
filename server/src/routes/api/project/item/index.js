@@ -106,8 +106,8 @@ let list = RouterConfigBuilder.routerConfigBuilder('/api/project/item/list', Rou
   res.send(API_RES.showResult(projectList))
 }, false)
 
-let deleteProject = RouterConfigBuilder.routerConfigBuilder('/api/project/item/delete', RouterConfigBuilder.METHOD_TYPE_GET, async (req, res) => {
-  let id = parseInt(_.get(req, ['query', 'id'], 0))
+let deleteProject = RouterConfigBuilder.routerConfigBuilder('/api/project/item/delete', RouterConfigBuilder.METHOD_TYPE_POST, async (req, res) => {
+  let id = parseInt(_.get(req, ['body', 'id'], 0))
   let updateUcid = parseInt(_.get(req, ['fee', 'user', 'ucid'], '0'))
   if (_.isInteger(id) === false) {
     res.send(API_RES.showError('参数错误'))
