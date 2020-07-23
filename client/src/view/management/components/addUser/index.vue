@@ -71,7 +71,6 @@ export default {
           label: 'owner'
         }
       ],
-      addMsg: false,
       dev: ROLE_DEV,
       isLoading: false,
       isShow: false
@@ -93,11 +92,8 @@ export default {
     // 账号发送，获取ucid,保存添加的用户，刷新用户列表
     async addOk () {
       if (_.isEmpty(this.addUser.ucidList) === false) {
-        await this.getMemberAdd(this.addUser)
-        this.$Message.info(this.addMsg)
+        let res = await this.getMemberAdd(this.addUser)
         this.$emit('listenAdd')
-      } else {
-        this.$Message.info('添加失败，请检查账号')
       }
       this.init()
     },
@@ -112,7 +108,7 @@ export default {
         ucid_list: params.ucidList,
         role: params.role
       })
-      this.addMsg = res.msg
+      return res
     },
     // 获取用户ucid
     async getUserSearch (param) {

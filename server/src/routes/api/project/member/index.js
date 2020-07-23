@@ -63,16 +63,17 @@ let add = RouterConfigBuilder.routerConfigBuilder('/api/project/member/add', Rou
       }
       sign = UC.getSign(params, headers, appkey)
       headers.sign = sign
+      // ========= 此处需要用户自己实现 =========== //
       let userInfoResponse = await http.get(ucConfig.api + '/ehr/user/agent', {
         params,
         headers
       }).catch(err => {
         Logger.warn('用户信息接口响应异常 err =>', _.get(err, ['response', 'data'], {}))
-        return _.set(
-          {},
-          ['data', 'msg'],
-          _.get(err, ['response', 'data'], {})
-        )
+        return _.set({},['data', 'data'], [{
+          account: 'test01',
+          mobile: '12345678901',
+          name: '测试用户1'
+        }])
       })
       let userInfo = _.get(userInfoResponse, ['data', 'data', 0], {})
       if (_.isEmpty(userInfo)) {
@@ -150,7 +151,7 @@ let add = RouterConfigBuilder.routerConfigBuilder('/api/project/member/add', Rou
   if (anyOneSuccess) {
     res.send(API_RES.showResult([], '添加完毕'))
   } else {
-    res.send(API_RES.showError([], '添加失败,请重试'))
+    res.send(API_RES.showError('添加失败,请重试'))
   }
 })
 
