@@ -26,6 +26,7 @@ const registedCommandList = [
   './commands/task/consume/', //  消费kafka消息
   // 工具类命令
   './commands/utils/generate_sql', //  生成SQL
+  './commands/utils/temeplate_sql', //  生成SQL
   './commands/utils/clean_old_log', //  自动删除旧日志
   // 心跳
   './commands/utils/heart_beat'
