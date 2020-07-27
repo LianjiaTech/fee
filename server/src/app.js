@@ -10,20 +10,25 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 */
 import '@babel/polyfill'
 
+import ejs from 'ejs'
+import _ from 'lodash'
+import cors from 'cors'
 import path from 'path'
 import express from 'express'
-import _ from 'lodash'
+import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
+import proxy from 'http-proxy-middleware'
+
 import router from '~/src/routes/index'
 import appConfig from '~/src/configs/app'
-import cookieParser from 'cookie-parser'
-import bodyParser from 'body-parser'
-import cors from 'cors'
 import Logger from '~/src/library/logger'
 
 import Alert from '~/src/library/utils/modules/alert'
 import WatchIdList from '~/src/configs/alarm'
 import PrivilegeChecker from '~/src/middlewares/privilege'
-import ejs from 'ejs'
+import env from '~/src/configs/env'
+
+const isDevelopment = env === 'development'
 
 const startup = () => {
   const app = express()
@@ -43,18 +48,11 @@ const startup = () => {
   app.use(cookieParser())
 
   // 支持跨域
-  app.use(cors({
-    origin: true,
-    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-    credentials: true
-  }))
+  app.use(cors())
 
   // 将用户信息&项目信息补充到req中(在router内进行权限检测)
   app.use(PrivilegeChecker.appendUserInfo)
   app.use(PrivilegeChecker.appendProjectInfo)
-
-  /* 添加静态路径 */
-  app.use(express.static(path.join(__dirname, '../public')))
 
   // 添加接口路径
   app.use('/', async (req, res, next) => {
@@ -63,11 +61,22 @@ const startup = () => {
     let projectApiReg = /^\/project\/\d+\/api/i
     if (_.startsWith(path, '/api') || path.search(projectApiReg) === 0) {
       return router(req, res, next)
-    } else {
-      next()
     }
+    next()
   })
 
+  // 开发环境静态资源代理到前端webpack-dev-server
+  isDevelopment &&
+    app.use(
+      proxy({
+        target: appConfig.host, // target host
+        changeOrigin: true // needed for virtual hosted sites
+      })
+    )
+  /* 给自己渲染图表用的接口 */
+  app.use('/painting', express.static(path.join(__dirname, '../painting')))
+  /* 添加静态路径 */
+  app.use(express.static(path.join(__dirname, '../public')))
   // 支持前端History模式 => https://router.vuejs.org/zh/guide/essentials/history-mode.html#后端配置例子
   // 将所有404页面均返回index.html
   app.use('*', (req, res) => {

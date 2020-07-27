@@ -98,6 +98,7 @@ const add = RouterConfigBuilder.routerConfigBuilder('/api/project/apply/add', Ro
     return res.send(API_RES.showError('项目pid已经存在了'))
   }
   const applyCheckResult = await MProjectApply.getProjectByProjectName(pid)
+  
   if (applyCheckResult) {
     return res.send(API_RES.showError(`pid为${pid}得申请已经提交过了`))
   }
@@ -109,22 +110,22 @@ const add = RouterConfigBuilder.routerConfigBuilder('/api/project/apply/add', Ro
     res.send(API_RES.showResult({id: isSuccess}, '申请已经提交审核，请注意查收邮件！'))
     // 发送申请成功的邮件
     // projectName, pid, mail, homePage, adminName, pv, rate, note
-    const {
-      display_name: projectName,
-      mail,
-      home_page: homePage,
-      pv,
-      rate,
-      apply_mail: applyMail,
-      apply_desc: note
-    } = payload
-    const html = applyTemplage({projectName, pid, mail, homePage, pv, rate, note}, 'pending')
-    const mails = [mail, applyMail, ...mailConfig.cc]
-    await sendMail({
-      to: mails,
-      title: `"${projectName}"接入灯塔申请`,
-      html
-    })
+    // const {
+    //   display_name: projectName,
+    //   mail,
+    //   home_page: homePage,
+    //   pv,
+    //   rate,
+    //   apply_mail: applyMail,
+    //   apply_desc: note
+    // } = payload
+    // const html = applyTemplage({projectName, pid, mail, homePage, pv, rate, note}, 'pending')
+    // const mails = [mail, applyMail, ...mailConfig.cc]
+    // await sendMail({
+    //   to: mails,
+    //   title: `"${projectName}"接入灯塔申请`,
+    //   html
+    // })
   } else {
     res.send(API_RES.showError(errMsg))
   }

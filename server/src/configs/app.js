@@ -25,7 +25,7 @@ const development = {
   name: 'fee监控平台开发环境',
   port: 3000,
   proxy: false,
-  host: 'http://dev-xxx.xxxx.com',
+  host: 'http://dev-arms.fee.lianjia.com:8080',
   absoluteLogPath: path.resolve(__dirname, '../../', 'log')
 }
 // 测试环境配置

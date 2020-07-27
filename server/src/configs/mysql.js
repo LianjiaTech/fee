@@ -12,7 +12,7 @@ const development = {
   port: '3306',
   user: 'root',
   password: '123456',
-  database: 'platform'
+  database: 'fee_dev'
 }
 // 测试环境配置
 const testing = development

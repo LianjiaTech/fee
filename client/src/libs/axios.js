@@ -1,9 +1,9 @@
 import Axios from 'axios'
-import baseURL from 'src/../config/url'
 import { Message } from 'iview'
 import Cookies from 'js-cookie'
 import { TOKEN_KEY } from 'src/libs/util'
 
+const baseURL = '/'
 class httpRequest {
   constructor() {
     this.options = {
