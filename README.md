@@ -102,7 +102,7 @@ fee(灯塔)是前端监控系统，贝壳找房主要前端监控系统，服务
    ```javascript
    npm run fee Utils:TemplateSQL
    ```
-   [表说明参见]('./server/README.md')
+   [表说明参见](./server/README.md)
 
 12. 启动 server 服务
     在项目 **server** 目录下

@@ -43,7 +43,7 @@ SourceMap
 # 启动 `Web server`
 1. `npm run watch` 启动babel监控
 2. `npm run dev` 启动 `Web Server`
-2.  访问 http://localhost:3000/，开发环境下，静态资源默认被代理到8080端口，因此需要在8080端口启动Client服务
+2.  访问 `http://localhost:3000/`，开发环境下，静态资源默认被代理到8080端口，因此需要在8080端口启动Client服务
 
 # 启动 `Job server`
 - 建议将数据清洗任务单独部署到一台任务机上，以保证灯塔web服务的稳定性
