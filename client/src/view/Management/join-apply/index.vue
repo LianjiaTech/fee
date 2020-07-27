@@ -187,7 +187,7 @@
         this.formValidate.apply_ucid = ucid
         this.formValidate.apply_nick_name = userName
         this.formValidate.apply_mail = mail
-        this.pageState.submitLoading = true
+        // this.pageState.submitLoading = true
         const result = await projectApplyAdd(this.formValidate)
         this.pageState.submitLoading = false
         if (result) {

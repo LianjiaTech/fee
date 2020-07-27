@@ -30,7 +30,6 @@ let normalLogin = RouterConfigBuilder.routerConfigBuilder(
         MUser.REGISTER_TYPE_SITE
       )
       let token = Auth.generateToken(ucid, account, nickname)
-
       res.cookie('fee_token', token, {
         maxAge: 100 * 86400 * 1000,
         httpOnly: false
