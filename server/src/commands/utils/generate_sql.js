@@ -22,6 +22,7 @@ const SINGLE_T_O_SOURCEMAP = 't_o_sourcemap'  // sourceMap表
 const SINGLE_T_O_DOT_EVENT_INFO = 't_o_dot_event_info'  // 打点事件配置表
 const SINGLE_T_O_DOT_EVENT_PROPS = 't_o_dot_event_props'  // 打点事件属性配置表
 const SINGLE_T_O_DOT_EVENT_TAGS = 't_o_dot_event_tags'  // 打点事件tag配置表
+const SINGLE_T_O_DAILY_SUBSCRIBE = 't_o_daily_subscribe'  // 日报订阅表
 
 
 let TABLE_TEMPLATE = {}
@@ -232,7 +233,22 @@ TABLE_TEMPLATE[SINGLE_T_O_DOT_EVENT_TAGS] = `(
   UNIQUE KEY \`uniq_name_project_id\` (\`name\`,\`project_id\`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='打点事件tag配置表';`
 
-function generate (baseTableName, projectId = '', tableTime = '') {
+TABLE_TEMPLATE[SINGLE_T_O_DAILY_SUBSCRIBE] = `(
+  \`id\` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  \`project_id\` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '被订阅项目的id',
+  \`ucid\` varchar(50) NOT NULL DEFAULT '' COMMENT '日报订阅者ucid',
+  \`send_time\` varchar(20) NOT NULL DEFAULT '08:00' COMMENT '日报发送时间',
+  \`create_time\` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '创建此记录的时间',
+  \`update_time\` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '更新此记录的时间',
+  \`email\` varchar(200) NOT NULL DEFAULT '' COMMENT '用户邮箱',
+  \`project_display_name\` varchar(100) NOT NULL DEFAULT '' COMMENT '项目名称',
+  \`need_callback\` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否需要将原始日报数据回传',
+  \`callback_url\` varchar(200) NOT NULL DEFAULT '' COMMENT '接收数据的接口地址',
+  \`protocol\` varchar(10) NOT NULL DEFAULT 'http' COMMENT '接口协议',
+  PRIMARY KEY (\`id\`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='日报订阅表';`
+
+function generate (baseTableName) {
    // 获取模板
   let content = TABLE_TEMPLATE[baseTableName]
 
@@ -259,7 +275,7 @@ class GenerateSQL extends Base {
   }
 
   async execute (args, options) {
-    let { projectIdList, startAtYm, finishAtYm } = args
+    let { projectIdList } = args
     projectIdList = projectIdList.split(',')
     if (_.isEmpty(projectIdList)) {
       this.warn('自动退出:projectIdList为空 =>', projectIdList)
@@ -312,7 +328,8 @@ SET global max_allowed_packet=524288000;
       SINGLE_T_O_ALARM_ES_ID,
       SINGLE_T_O_DOT_EVENT_INFO,
       SINGLE_T_O_DOT_EVENT_PROPS,
-      SINGLE_T_O_DOT_EVENT_TAGS
+      SINGLE_T_O_DOT_EVENT_TAGS,
+      SINGLE_T_O_DAILY_SUBSCRIBE
     ]) {
       let content = generate(tableName)
       commonSqlContent = `${commonSqlContent}\n${content}`

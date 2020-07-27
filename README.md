@@ -7,8 +7,11 @@ fee(灯塔)是前端监控系统，贝壳找房主要前端监控系统，服务
 
 ## NOTE: 2.0 版本存储、检索打点数据依赖[ElasticSearch@6.x](https://www.elastic.co/guide/en/elasticsearch/reference/6.2/getting-started.html)
 
-## 系统 demo
+## 系统架构
 
+<img src="./server/doc/assets/img/arch.jpg" width="800"/>
+
+## 系统功能
 ### 菜单点击量统计
 
 <img src="./client/src/assets/github/1.png" width="800"/>
@@ -41,7 +44,7 @@ fee(灯塔)是前端监控系统，贝壳找房主要前端监控系统，服务
 <img src="./client/src/assets/github/9.png" width="800"/>
 
 # 环境搭建
-
+**下述`mysql` & `redis` & `ES` 环境的搭建，大家可以移步配套 [Docker集成环境一键部署](https://github.com/alphawq/Fee-dev-docker)（欢迎大家`star`）。可以帮助大家一键创建相关服务环境，免去繁琐的环境部署与配置给大家带来的不必要的时间开销！**
 1. [mysql](https://www.mysql.com/)
 2. [Node.js](http://nodejs.cn/)
 3. [redis](https://redis.io/)
@@ -55,9 +58,9 @@ fee(灯塔)是前端监控系统，贝壳找房主要前端监控系统，服务
     &&  cd fee
    ```
 
-   在~/www/openfee 找到我们 clone 的项目
+   在 `~/www/fee/` 找到我们 `clone` 的项目
 
-6. 配置数据库(在**server/src/configs/mysql.js**中修改主机地址/数据库端口/数据库用户名/数据库密码/数据库库名)，在数据库中创建一个空的名字叫做**『platform』**的数据库。
+6. 配置 `mysql` (路径 `server/src/configs/mysql.js`)，在数据库中创建一个空的名字叫做『platform』的数据库。
    ```javascript
    const development = {
      host: '127.0.0.1', // 主机地址
@@ -67,7 +70,7 @@ fee(灯塔)是前端监控系统，贝壳找房主要前端监控系统，服务
      database: 'platform' // 数据库库名
    }
    ```
-7. 配置 redis(在**server/src/configs/redis.js**中修改主机地址/redis 端口)。
+7. 配置 `redis` (路径 `server/src/configs/redis.js`)
    ```javascript
    // 开发环境配置
    const development = {
@@ -75,7 +78,7 @@ fee(灯塔)是前端监控系统，贝壳找房主要前端监控系统，服务
      port: '6379' // redis端口
    }
    ```
-8. 配置 elasticsearch(在**server/src/configs/elasticsearch.js**中修改主机地址/elasticsearch 端口)。
+8. 配置 `elasticsearch` (路径 `server/src/configs/elasticsearch.js`)
 
    ```javascript
    // 开发环境配置
@@ -84,48 +87,46 @@ fee(灯塔)是前端监控系统，贝壳找房主要前端监控系统，服务
    }
    ```
 
-9. 安装依赖
-   在项目 **server** 目录下
+9. 安装依赖，在项目 **server** 目录下
    ```javascript
    npm install
    ```
-10. 启动编译 dist 服务
-    打开一个新的**窗口**在项目 **server** 目录下
+10. 启动编译 dist 服务，打开一个新的**窗口**在项目 **server** 目录下
 
-```javascript
-npm run watch
-```
+   ```javascript
+   npm run watch
+   ```
 
-11. 生成数据库表
-    在项目 **server** 目录下
+11. 生成数据库表，在项目 **server** 目录下
 
-```javascript
-npm run fee Utils:TemplateSQL
-```
+   ```javascript
+   npm run fee Utils:GenerateSQL 1 '2020-06' '2020-07' > init.sql
+   ```
+   [表说明参见]('./server/README.md')
 
 12. 启动 server 服务
     在项目 **server** 目录下
 
-```javascript
-npm run dev
-```
+   ```javascript
+   npm run dev
+   ```
 
 13. 安装 UI 服务依赖
     在项目 **client** 目录下
 
-```javascript
-npm install
-```
+   ```javascript
+   npm install
+   ```
 
 14. 安装 UI 服务依赖
     在项目 **client** 目录下
 
-```javascript
-npm run dev
-```
+   ```javascript
+   npm run dev
+   ```
 
-15. 访问本地地址 **`127.0.0.1:8080`**，
-    进行**注册**，**登录**之后，就能看到模板项目了
+15. 访问本地地址 **`127.0.0.1:3000`**，
+    进行**注册**、**登录**之后，就能进入系统了
 
 ## npm 依赖说明
 
