@@ -119,7 +119,7 @@ class TaskManager extends Base {
   async registerTaskRepeatPer1Minute () {
     let that = this
     // 每分钟的第0秒启动
-    schedule.scheduleJob('0 */1 * * * * *', function () {
+    schedule.scheduleJob('0 */1 * * * *', function () {
       that.log('registerTaskRepeatPer1Minute 开始执行')
 
       let nowByMinute = moment().format(DATE_FORMAT.COMMAND_ARGUMENT_BY_MINUTE)
@@ -158,7 +158,7 @@ class TaskManager extends Base {
   async registerTaskRepeatPer10Minute () {
     let that = this
     // 每10分钟的第30秒启动
-    schedule.scheduleJob('15 */10 * * * * *', function () {
+    schedule.scheduleJob('15 */10 * * * *', function () {
       that.log('registerTaskRepeatPer10Minute 开始执行')
 
       let nowByHour = moment().format(DATE_FORMAT.COMMAND_ARGUMENT_BY_HOUR)
@@ -212,7 +212,7 @@ class TaskManager extends Base {
   async registerTaskRepeatPer1Hour () {
     let that = this
     // 每小时15分30秒启动
-    schedule.scheduleJob('30 15 * * * * *', function () {
+    schedule.scheduleJob('30 15 * * * *', function () {
       that.log('registerTaskRepeatPer1Hour 开始执行')
 
       let nowByDay = moment().format(DATE_FORMAT.COMMAND_ARGUMENT_BY_DAY)
@@ -254,7 +254,7 @@ class TaskManager extends Base {
   async registerTaskRepeatPer6Hour () {
     let that = this
     // 每过6小时, 在35分45秒启动
-    schedule.scheduleJob('45 35 */6 * * * *', function () {
+    schedule.scheduleJob('45 35 */6 * * *', function () {
       that.log('registerTaskRepeatPer6Hour 开始执行')
       let nowByMonth = moment().format(DATE_FORMAT.COMMAND_ARGUMENT_BY_MONTH)
 
