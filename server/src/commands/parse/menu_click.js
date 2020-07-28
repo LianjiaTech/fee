@@ -83,7 +83,7 @@ class MenuClick extends ParseBase {
     let city = _.get(record, ['city'], '')
     let recordAt = _.get(record, ['time'], 0)
 
-    let countAtTime = moment.unix(recordAt).format(COUNT_BY_HOUR_DATE_FORMAT)
+    let countAtTime = moment.unix(recordAt).format(DATE_FORMAT.DATABASE_BY_DAY)
     let distributionPath = [country, province, city]
 
     let distributeCountCount = 1
@@ -134,7 +134,7 @@ class MenuClick extends ParseBase {
             totalCount = totalCount + record
           }
 
-          let isSuccess = await MBehaviorDistribution.replaceRecord(projectId, code, name, url, totalCount, countAtTime, COUNT_TYPE_HOUR, distribution)
+          let isSuccess = await MBehaviorDistribution.replaceRecord(projectId, code, name, url, totalCount, countAtTime, DATE_FORMAT.UNIT.DAY, distribution)
           processRecordCount = processRecordCount + 1
           if (isSuccess) {
             successSaveCount = successSaveCount + 1
