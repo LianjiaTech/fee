@@ -4,15 +4,15 @@
 
 # 运行环境说明
 
-* Linux VM_15_49_centos 3.10.0-862.3.2.el7.x86_64 
+* Linux VM_15_49_centos 3.10.0-862.3.2.el7.x86_64
   * 通过Docker启动kafka相关服务
   * Nginx配置
-* MacOS Catalina 10.15.2 
+* MacOS Catalina 10.15.2
   * 发送打点请求
   * Kafka Manager
 # 整体流程
 
-![图片](https://uploader.shimo.im/f/yQwjdVt5u8dSGR7G.png!thumbnail)
+![图片](./public/imgs/flow.png)
 # Nginx相关
 
 ## log_format配置
@@ -33,7 +33,7 @@ location = /test.gif {
 
 ### 1、浏览器访问NG服务：
 
-将这里的 `http://10.26.15.49` 替换成你的 `nginx` 服务地址 
+将这里的 `http://10.26.15.49` 替换成你的 `nginx` 服务地址
 
 ```plain
 http://10.26.15.49/test.gif?d=%7B%22type%22%3A%22product%22%2C%22common%22%3A%7B%22pid%22%3A%22infra_test%22%2C%22uuid%22%3A%22-lxoodk-9l8r2t-xefoh5rsuqo6cod-o977azz12%22%2C%22ucid%22%3A1000000000000000%2C%22is_test%22%3Afalse%2C%22record%22%3A%7B%22spa%22%3Atrue%2C%22time_on_page%22%3Atrue%2C%22performance%22%3Atrue%2C%22js_error%22%3Atrue%2C%22js_error_report_config%22%3A%7B%22ERROR_RUNTIME%22%3Atrue%2C%22ERROR_SCRIPT%22%3Atrue%2C%22ERROR_STYLE%22%3Atrue%2C%22ERROR_IMAGE%22%3Atrue%2C%22ERROR_AUDIO%22%3Atrue%2C%22ERROR_VIDEO%22%3Atrue%2C%22ERROR_CONSOLE%22%3Atrue%2C%22ERROR_TRY_CATCH%22%3Atrue%7D%2C%22api_report_config%22%3A%7B%22enable%22%3Atrue%2C%22withBody%22%3Atrue%2C%22withResp%22%3Atrue%2C%22sampleRate%22%3A1%7D%7D%2C%22version%22%3A%221.0.0%22%2C%22timestamp%22%3A1594016338232%2C%22runtime_version%22%3A%221.0.0%22%2C%22sdk_version%22%3A%221.3.1-11%22%2C%22page_type%22%3A%22test.demo.com%2Fservice%2F565%2Fedit%22%7D%2C%22code%22%3A10001%2C%22extra%22%3A%7B%7D%2C%22detail%22%3A%7B%22error_no%22%3A%22%22%2C%22http_code%22%3A%22%22%2C%22during_ms%22%3A%22%22%2C%22url%22%3A%22%22%2C%22request_size_b%22%3A%22%22%2C%22response_size_b%22%3A%22%22%2C%22duration_ms%22%3A742801%7D%7D
@@ -108,9 +108,9 @@ input(type="imfile" Tag="nginx-accesslog" File="/var/log/access.log" Ruleset="ng
 * 通过docker-compose的方式部署（若对kafka以及docker不熟悉，请先了解相关知识）。相关配置参见：[Docker compose Kafka, Zookeeper and Kafka manager](https://gist.github.com/alphawq/1c2dc14cbc303e32ec45c64e2d764284#docker-compose-kafka-zookeeper-and-kafka-manager)
 ## 启动
 
-命令： `docker-compose -f docker-compose.yml up -d` 
+命令： `docker-compose -f docker-compose.yml up -d`
 
-![图片](https://uploader.shimo.im/f/1yyuwKDqu6BPDOmx.png!thumbnail)
+![图片](./public/imgs/start.png)
 
 如图，我们就在单机环境下，启动了一个单节点的kafka服务。启动成功后，可以通过访问kafka-manager服务来对kafka节点进行管理。
 
@@ -120,16 +120,16 @@ input(type="imfile" Tag="nginx-accesslog" File="/var/log/access.log" Ruleset="ng
 
 创建名为 `fee-test` 的单节点集群
 
-![图片](https://uploader.shimo.im/f/EwE6AwAOUNKDQl8c.png!thumbnail)
+![图片](./public/imgs/cluster.png)
 
 ### 创建Topic
 
-创建一个名为  `fee-test`  的 `topic` 
+创建一个名为  `fee-test`  的 `topic`
 
 * 这里的 `topic` 名称需要跟上面配置的 `rsyslog` 的 `topic` 名称一致
 * 分区和副本填  `1`  即可
 
-![图片](https://uploader.shimo.im/f/uiisFa5yEfX6r6OP.png!thumbnail)
+![图片](./public/imgs/topic.png)
 
 ok，到了这里，所有的一切准备工作都已完成！
 
@@ -149,28 +149,28 @@ tail -f /var/log/access.log
 ```
 会发现有新的日志写入：
 
-![图片](https://uploader.shimo.im/f/0Mrw9wlwhlaFF0sv.png!thumbnail)
+![图片](./public/imgs/log.png)
 
 ## 第三步，查看日志是否写入kafka
 
-*  `offsets` 初始值为 `0` ，每当有一条日志写入，就会增  `1` 
+*  `offsets` 初始值为 `0` ，每当有一条日志写入，就会增  `1`
 * 若日志成功写入，这里会发生变化
 
-![图片](https://uploader.shimo.im/f/8G8YA0mTGZg0FMi2.png!thumbnail)
+![图片](./public/imgs/kafka.png)
 
 ## 第四步，消费日志
 
-* 修改kafka配置如下：`src/configs/kafka.js` 
+* 修改kafka配置如下：`src/configs/kafka.js`
 
-![图片](https://uploader.shimo.im/f/wuvR7Ly9BuEJnCEA.png!thumbnail)
+![图片](./public/imgs/kafka-config.png)
 
-* 订阅topic， `src/command/save_log/parseKafkaLog.js` 
+* 订阅topic， `src/command/save_log/parseKafkaLog.js`
 
-![图片](https://uploader.shimo.im/f/eCpWrvL0HUmWM4Jg.png!thumbnail)
+![图片](./public/imgs/kafka-topic.png)
 
-* 开启消费任务 `npm run fee  SaveLog:Kafka` 
+* 开启消费任务 `npm run fee  SaveLog:Kafka`
 
-![图片](https://uploader.shimo.im/f/c0IkUTnIZE9LsLQL.png!thumbnail)
+![图片](./public/imgs/kafka-consume.png)
 
 大功告成！
 
